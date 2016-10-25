@@ -1,0 +1,11 @@
+## Eagle Files
+# Ignore the board and schematic backup files
+*.b#?
+*.s#?
+*.l#?
+
+## Unix
+# Backup files
+*~
+
+
