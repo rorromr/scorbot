@@ -142,18 +142,18 @@
 </layers>
 <board>
 <plain>
-<wire x1="-8.89" y1="-0.635" x2="39.37" y2="-0.635" width="0" layer="20"/>
-<wire x1="39.37" y1="-0.635" x2="39.37" y2="36.195" width="0" layer="20"/>
-<wire x1="39.37" y1="36.195" x2="-8.89" y2="36.195" width="0" layer="20"/>
-<wire x1="-8.89" y1="36.195" x2="-8.89" y2="-0.635" width="0" layer="20"/>
-<text x="0" y="7.62" size="2.54" layer="1" ratio="20">IP+</text>
-<text x="0" y="27.305" size="2.54" layer="1" ratio="20">IP-</text>
-<text x="32.385" y="10.16" size="1.6764" layer="1" ratio="17">+5V</text>
-<text x="33.02" y="23.495" size="1.6764" layer="1" ratio="17">OUT</text>
-<hole x="-6.985" y="34.29" drill="2.2"/>
-<hole x="-6.985" y="1.27" drill="2.2"/>
-<hole x="37.465" y="34.29" drill="2.2"/>
-<hole x="37.465" y="1.27" drill="2.2"/>
+<wire x1="0" y1="0" x2="48.26" y2="0" width="0" layer="20"/>
+<wire x1="48.26" y1="0" x2="48.26" y2="35.56" width="0" layer="20"/>
+<wire x1="48.26" y1="35.56" x2="0" y2="35.56" width="0" layer="20"/>
+<wire x1="0" y1="35.56" x2="0" y2="0" width="0" layer="20"/>
+<text x="7.62" y="7.62" size="2.54" layer="1" ratio="20">IP+</text>
+<text x="7.62" y="27.94" size="2.54" layer="1" ratio="20">IP-</text>
+<text x="41.91" y="10.16" size="1.6764" layer="1" ratio="17">+5V</text>
+<text x="41.91" y="24.13" size="1.6764" layer="1" ratio="17">OUT</text>
+<hole x="2.54" y="33.02" drill="2.2"/>
+<hole x="2.54" y="2.54" drill="2.2"/>
+<hole x="45.72" y="33.02" drill="2.2"/>
+<hole x="45.72" y="2.54" drill="2.2"/>
 </plain>
 <libraries>
 <library name="uchile_robotics_eagle_lib">
@@ -408,13 +408,13 @@ design rules under a new name.</description>
 </pass>
 </autorouter>
 <elements>
-<element name="J1" library="uchile_robotics_eagle_lib" package="1X03_LONGPADS" value="" x="21.59" y="33.02" rot="R180"/>
-<element name="J2" library="uchile_robotics_eagle_lib" package="1X03_LONGPADS" value="" x="21.59" y="27.94" rot="R180"/>
-<element name="J3" library="uchile_robotics_eagle_lib" package="1X03_LONGPADS" value="" x="16.51" y="2.54"/>
-<element name="J4" library="uchile_robotics_eagle_lib" package="1X03_LONGPADS" value="" x="16.51" y="7.62"/>
-<element name="J5" library="uchile_robotics_eagle_lib" package="1X03_LONGPADS" value="" x="35.56" y="20.32" rot="R270"/>
-<element name="J6" library="uchile_robotics_eagle_lib" package="METALTEX-2" value="METALTEX-2" x="2.54" y="17.78" rot="R270"/>
-<element name="U1" library="uchile_robotics_eagle_lib" package="LTS25_NP" value="LEM_LTS25_NP" x="29.21" y="17.78" rot="R180"/>
+<element name="J1" library="uchile_robotics_eagle_lib" package="1X03_LONGPADS" value="" x="30.48" y="33.02" rot="R180"/>
+<element name="J2" library="uchile_robotics_eagle_lib" package="1X03_LONGPADS" value="" x="30.48" y="27.94" rot="R180"/>
+<element name="J3" library="uchile_robotics_eagle_lib" package="1X03_LONGPADS" value="" x="25.4" y="2.54"/>
+<element name="J4" library="uchile_robotics_eagle_lib" package="1X03_LONGPADS" value="" x="25.4" y="7.62"/>
+<element name="J5" library="uchile_robotics_eagle_lib" package="1X03_LONGPADS" value="" x="44.45" y="20.32" rot="R270"/>
+<element name="J6" library="uchile_robotics_eagle_lib" package="METALTEX-2" value="METALTEX-2" x="11.43" y="17.78" rot="R270"/>
+<element name="U1" library="uchile_robotics_eagle_lib" package="LTS25_NP" value="LEM_LTS25_NP" x="38.1" y="17.78" rot="R180"/>
 </elements>
 <signals>
 <signal name="IP-">
@@ -422,106 +422,103 @@ design rules under a new name.</description>
 <contactref element="U1" pad="OUT4"/>
 <contactref element="J2" pad="3"/>
 <contactref element="J6" pad="P1"/>
-<wire x1="16.51" y1="24.13" x2="16.51" y2="33.02" width="1.4224" layer="16"/>
-<wire x1="4.318" y1="20.32" x2="15.24" y2="20.32" width="2.54" layer="16"/>
-<wire x1="15.24" y1="20.32" x2="16.51" y2="21.59" width="2.54" layer="16"/>
-<wire x1="16.51" y1="21.59" x2="16.51" y2="24.13" width="2.54" layer="16"/>
-<wire x1="16.51" y1="33.02" x2="16.51" y2="27.94" width="1.4224" layer="1"/>
-<wire x1="16.51" y1="27.94" x2="16.51" y2="24.13" width="1.4224" layer="1"/>
-<polygon width="0.4064" layer="16">
-<vertex x="3.81" y="21.59"/>
-<vertex x="3.81" y="18.415"/>
-<vertex x="17.145" y="18.415"/>
-<vertex x="17.78" y="19.05"/>
-<vertex x="17.78" y="22.86"/>
-<vertex x="3.81" y="22.86"/>
+<wire x1="25.4" y1="24.13" x2="25.4" y2="33.02" width="1.4224" layer="16"/>
+<wire x1="13.208" y1="20.32" x2="24.13" y2="20.955" width="2.54" layer="16"/>
+<wire x1="24.13" y1="20.955" x2="25.4" y2="22.225" width="2.54" layer="16"/>
+<wire x1="25.4" y1="22.225" x2="25.4" y2="24.13" width="2.54" layer="16"/>
+<wire x1="25.4" y1="33.02" x2="25.4" y2="27.94" width="1.4224" layer="1"/>
+<wire x1="25.4" y1="27.94" x2="25.4" y2="24.13" width="1.4224" layer="1"/>
+<polygon width="0.254" layer="16">
+<vertex x="12.7" y="22.86"/>
+<vertex x="12.7" y="18.415"/>
+<vertex x="26.035" y="18.415"/>
+<vertex x="26.67" y="19.05"/>
+<vertex x="26.67" y="22.86"/>
 </polygon>
 </signal>
 <signal name="N$2">
 <contactref element="J1" pad="2"/>
 <contactref element="U1" pad="OUT5"/>
 <contactref element="J2" pad="2"/>
-<wire x1="19.05" y1="33.02" x2="19.05" y2="27.94" width="1.4224" layer="16"/>
-<wire x1="19.05" y1="27.94" x2="19.05" y2="24.13" width="1.4224" layer="16"/>
-<wire x1="19.05" y1="24.13" x2="19.05" y2="27.94" width="1.4224" layer="1"/>
-<wire x1="19.05" y1="33.02" x2="19.05" y2="27.94" width="1.4224" layer="1"/>
+<wire x1="27.94" y1="33.02" x2="27.94" y2="27.94" width="1.4224" layer="16"/>
+<wire x1="27.94" y1="27.94" x2="27.94" y2="24.13" width="1.4224" layer="16"/>
+<wire x1="27.94" y1="24.13" x2="27.94" y2="27.94" width="1.4224" layer="1"/>
+<wire x1="27.94" y1="33.02" x2="27.94" y2="27.94" width="1.4224" layer="1"/>
 </signal>
 <signal name="N$3">
 <contactref element="J1" pad="1"/>
 <contactref element="U1" pad="OUT6"/>
 <contactref element="J2" pad="1"/>
-<wire x1="21.59" y1="24.13" x2="21.59" y2="27.94" width="1.4224" layer="16"/>
-<wire x1="21.59" y1="27.94" x2="21.59" y2="33.02" width="1.4224" layer="16"/>
-<wire x1="21.59" y1="24.13" x2="21.59" y2="27.94" width="1.4224" layer="1"/>
-<wire x1="21.59" y1="27.94" x2="21.59" y2="33.02" width="1.4224" layer="1"/>
+<wire x1="30.48" y1="24.13" x2="30.48" y2="27.94" width="1.4224" layer="16"/>
+<wire x1="30.48" y1="27.94" x2="30.48" y2="33.02" width="1.4224" layer="16"/>
+<wire x1="30.48" y1="24.13" x2="30.48" y2="27.94" width="1.4224" layer="1"/>
+<wire x1="30.48" y1="27.94" x2="30.48" y2="33.02" width="1.4224" layer="1"/>
 </signal>
 <signal name="N$4">
 <contactref element="U1" pad="IN3"/>
 <contactref element="J4" pad="1"/>
 <contactref element="J3" pad="1"/>
-<wire x1="16.51" y1="11.43" x2="16.51" y2="7.62" width="1.4224" layer="16"/>
-<wire x1="16.51" y1="2.54" x2="16.51" y2="7.62" width="1.4224" layer="16"/>
-<wire x1="16.51" y1="11.43" x2="16.51" y2="7.62" width="1.4224" layer="1"/>
-<wire x1="16.51" y1="2.54" x2="16.51" y2="7.62" width="1.4224" layer="1"/>
+<wire x1="25.4" y1="11.43" x2="25.4" y2="7.62" width="1.4224" layer="16"/>
+<wire x1="25.4" y1="2.54" x2="25.4" y2="7.62" width="1.4224" layer="16"/>
+<wire x1="25.4" y1="11.43" x2="25.4" y2="7.62" width="1.4224" layer="1"/>
+<wire x1="25.4" y1="2.54" x2="25.4" y2="7.62" width="1.4224" layer="1"/>
 </signal>
 <signal name="N$5">
 <contactref element="U1" pad="IN2"/>
 <contactref element="J4" pad="2"/>
 <contactref element="J3" pad="2"/>
-<wire x1="19.05" y1="7.62" x2="19.05" y2="2.54" width="1.4224" layer="16"/>
-<wire x1="19.05" y1="11.43" x2="19.05" y2="7.62" width="1.4224" layer="16"/>
-<wire x1="19.05" y1="2.54" x2="19.05" y2="7.62" width="1.4224" layer="1"/>
-<wire x1="19.05" y1="11.43" x2="19.05" y2="7.62" width="1.4224" layer="1"/>
+<wire x1="27.94" y1="7.62" x2="27.94" y2="2.54" width="1.4224" layer="16"/>
+<wire x1="27.94" y1="11.43" x2="27.94" y2="7.62" width="1.4224" layer="16"/>
+<wire x1="27.94" y1="2.54" x2="27.94" y2="7.62" width="1.4224" layer="1"/>
+<wire x1="27.94" y1="11.43" x2="27.94" y2="7.62" width="1.4224" layer="1"/>
 </signal>
 <signal name="IP+">
 <contactref element="U1" pad="IN1"/>
 <contactref element="J4" pad="3"/>
 <contactref element="J3" pad="3"/>
 <contactref element="J6" pad="P2"/>
-<wire x1="4.318" y1="15.24" x2="20.32" y2="15.24" width="2.1844" layer="16"/>
-<wire x1="20.32" y1="15.24" x2="21.59" y2="13.97" width="2.1844" layer="16"/>
-<wire x1="21.59" y1="13.97" x2="21.59" y2="11.43" width="2.1844" layer="16"/>
-<wire x1="21.59" y1="11.43" x2="21.59" y2="7.62" width="1.4224" layer="16"/>
-<wire x1="21.59" y1="7.62" x2="21.59" y2="2.54" width="1.4224" layer="16"/>
-<wire x1="21.59" y1="11.43" x2="21.59" y2="7.62" width="1.4224" layer="1"/>
-<wire x1="21.59" y1="2.54" x2="21.59" y2="7.62" width="1.4224" layer="1"/>
+<wire x1="13.208" y1="15.24" x2="29.21" y2="15.875" width="2.1844" layer="16"/>
+<wire x1="29.21" y1="15.875" x2="30.48" y2="14.605" width="2.1844" layer="16"/>
+<wire x1="30.48" y1="14.605" x2="30.48" y2="11.43" width="2.1844" layer="16"/>
+<wire x1="30.48" y1="11.43" x2="30.48" y2="7.62" width="1.4224" layer="16"/>
+<wire x1="30.48" y1="7.62" x2="30.48" y2="2.54" width="1.4224" layer="16"/>
+<wire x1="30.48" y1="11.43" x2="30.48" y2="7.62" width="1.4224" layer="1"/>
+<wire x1="30.48" y1="2.54" x2="30.48" y2="7.62" width="1.4224" layer="1"/>
 <polygon width="0.4064" layer="16">
-<vertex x="5.08" y="17.145"/>
-<vertex x="21.59" y="17.145"/>
-<vertex x="22.86" y="15.875"/>
-<vertex x="22.86" y="12.7"/>
-<vertex x="20.32" y="12.7"/>
-<vertex x="19.685" y="13.335"/>
-<vertex x="5.08" y="13.335"/>
+<vertex x="13.97" y="17.145"/>
+<vertex x="30.48" y="17.145"/>
+<vertex x="31.75" y="15.875"/>
+<vertex x="31.75" y="13.335"/>
+<vertex x="13.97" y="13.335"/>
 </polygon>
 </signal>
 <signal name="N$7">
 <contactref element="J5" pad="1"/>
 <contactref element="U1" pad="OUT"/>
-<wire x1="29.21" y1="20.32" x2="35.56" y2="20.32" width="1.4224" layer="16"/>
+<wire x1="38.1" y1="20.32" x2="44.45" y2="20.32" width="1.4224" layer="16"/>
 </signal>
 <signal name="GND">
 <contactref element="J5" pad="2"/>
 <contactref element="U1" pad="V0"/>
-<wire x1="35.56" y1="17.78" x2="29.21" y2="17.78" width="1.4224" layer="16"/>
+<wire x1="44.45" y1="17.78" x2="38.1" y2="17.78" width="1.4224" layer="16"/>
 <polygon width="0.4064" layer="16" isolate="1.016">
-<vertex x="25.4" y="35.56"/>
-<vertex x="25.4" y="0"/>
-<vertex x="39.37" y="0"/>
-<vertex x="39.37" y="35.56"/>
+<vertex x="34.29" y="36.195"/>
+<vertex x="34.29" y="0.635"/>
+<vertex x="48.26" y="0.635"/>
+<vertex x="48.26" y="36.195"/>
 </polygon>
 </signal>
 <signal name="N$9">
 <contactref element="J5" pad="3"/>
 <contactref element="U1" pad="V+"/>
-<wire x1="29.21" y1="15.24" x2="35.56" y2="15.24" width="1.4224" layer="16"/>
+<wire x1="38.1" y1="15.24" x2="44.45" y2="15.24" width="1.4224" layer="16"/>
 </signal>
 <signal name="N$10">
 <polygon width="0.4064" layer="16" isolate="1.016" thermals="no" rank="2">
-<vertex x="-8.89" y="35.56"/>
-<vertex x="15.24" y="35.56"/>
-<vertex x="15.24" y="0"/>
-<vertex x="-8.89" y="0"/>
+<vertex x="0" y="36.195"/>
+<vertex x="24.13" y="36.195"/>
+<vertex x="24.13" y="0.635"/>
+<vertex x="0" y="0.635"/>
 </polygon>
 </signal>
 </signals>
