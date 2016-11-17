@@ -1,0 +1,4 @@
+fmax = 5MHz
+MSB First
+CPOL 0
+CPHA 1
