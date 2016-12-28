@@ -1,0 +1,34 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="use_gui" default="true"/>
+  <param name="use_gui" value="$(arg use_gui)" />
+  <!-- Publish /clock -->
+  <arg name="use_sim_time" value="true"/>
+ 
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find scorbot_gazebo)/config/effort_controllers.yaml" command="load"/>
+
+  <!-- Load the controllers, launch in other console -->
+  <node launch-prefix="xterm -T 'Scorbot controllers' -e" name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="scorbot"
+    args="joint_state_controller
+        scorbot_controller"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="gui" value="$(arg use_gui)"/>
+  </include>
+
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <param
+    name="robot_description"
+    command="$(find xacro)/xacro.py '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
+
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="state_publisher" />
+  
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model scorbot_model -param robot_description"/>
+
+</launch>

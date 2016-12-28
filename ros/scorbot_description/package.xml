@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<package format="2">
+    <!-- 
+      <depend>             : build, export, and execution dependencies 
+      <build_depend>       : pkgs needed at compile time (any file or library)
+      <build_export_depend>: pkgs needed to build libraries against this pkg
+      <exec_depend>        : pkgs needed to run this code. (e.g: shared libs)
+      <test_depend>        : only additional deps for unit testing (e.g: gtest)
+      <doc_depend>         : dependencies for documentation generation
+
+      See also:
+      - http://wiki.ros.org/catkin/package.xml
+      - http://www.ros.org/reps/rep-0140.html
+    -->
+
+
+    <!-- PACKAGE INFORMATION -->
+
+    <name>scorbot_description</name>
+    <version>1.0.0</version>
+    
+    <description>Contains URDF-related files for visualizing Scorbot ER VII</description>
+
+    <!-- team -->
+    <maintainer email="rmunozriffo@ing.uchile.cl">Rodrigo Munoz</maintainer>
+    <author     email="rmunozriffo@ing.uchile.cl">Rodrigo Munoz</author>
+
+    <license>BSD</license>
+
+    <!-- SYSTEM DEPENDENCIES -->
+
+    <!--  build system tool to build this package -->
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <!-- build, export, and execution dependencies -->
+
+    <!-- build dependencies -->
+
+    <!-- export dependencies -->
+    <build_export_depend>roscpp</build_export_depend>
+    <build_export_depend>tf</build_export_depend>
+    <build_export_depend>geometry_msgs</build_export_depend>
+    <build_export_depend>urdf</build_export_depend>
+    <build_export_depend>rviz</build_export_depend>
+    <build_export_depend>xacro</build_export_depend>
+
+    <!-- excution dependencies -->
+    <exec_depend>roscpp</exec_depend>
+    <exec_depend>tf</exec_depend>
+    <exec_depend>geometry_msgs</exec_depend>
+    <exec_depend>urdf</exec_depend>
+    <exec_depend>rviz</exec_depend>
+    <exec_depend>xacro</exec_depend>
+
+    <!-- test dependencies -->
+
+    <!-- documentation dependencies -->
+    
+    <export>
+    </export>
+
+</package>
