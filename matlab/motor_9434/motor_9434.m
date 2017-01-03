@@ -1,3 +1,5 @@
+%% Parameters
+motor_model = '9434';
 %% Current probe calibration
 % Load data
 load('current_probe_calibration.mat');
@@ -19,7 +21,7 @@ ra = istall\vstall;
 disp(['Armature resistance: ',num2str(ra),' Ohm']);
 clearvars -except ra k_probe
 %% Speed
-load('p3_raw.mat');
+load('p1_9434.mat');
 Np = 96;% Encoder pulse per revolution
 Ts = t(2)-t(1); % Sample time
 Fs = 1/Ts;

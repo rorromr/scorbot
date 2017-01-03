@@ -1,3 +1,5 @@
+%% Parameters
+motor_model = '9413';
 %% Current probe calibration
 % Load data
 load('current_probe_calibration.mat');
@@ -7,19 +9,22 @@ ylabel('Voltaje V');
 xlabel('Corriente A');
 k_probe = 1/(itest\vprobe);
 disp(['Probe constant: ',num2str(k_probe),' A/V']);
-clearvars -except k_probe
+clearvars -except k_probe motor_model
 %% Stall current
-load('stall_data.mat');
+stall_data_file = sprintf('motor_%s/stall_data.mat',motor_model);
+load(stall_data_file);
 figure;
 plot(vstall,istall,'b*-','LineWidth',2);
+title(motor_model)
 xlabel('Voltaje V');
 ylabel('Corriente A');
 % Armature resistance
 ra = istall\vstall;
 disp(['Armature resistance: ',num2str(ra),' Ohm']);
-clearvars -except ra k_probe
+clearvars -except ra k_probe motor_model
 %% Speed
-load('p3_raw.mat');
+data_file = sprintf('motor_%s/p1.mat',motor_model);
+load(data_file);
 Np = 96;% Encoder pulse per revolution
 Ts = t(2)-t(1); % Sample time
 Fs = 1/Ts;
@@ -30,6 +35,7 @@ Fc = 1000; % 1 KHz
 speed_filtered = filter(b,a,speed);
 figure;
 plot(t,speed_filtered*60/(2*pi),'LineWidth',2);
+title(motor_model)
 ylabel('Motor speed RPM');
 xlabel('Time s');
 %% Current
@@ -39,6 +45,7 @@ max_current = max(current_cal);
 no_load_current = mean(current_cal(50000:80000));
 va_mean = mean(va(50000:80000));
 plot(t,current_cal);
+title(motor_model)
 ylabel('Motor current A');
 xlabel('Time s');
 kt = (va_mean-ra*no_load_current)/no_load_speed;
@@ -63,9 +70,9 @@ la = ra*time_reach;
 opt = stepDataOptions('StepAmplitude',va_mean);
 num = 1;
 den = [la ra];
-sys_9413 = tf(num,den);
-step(sys_9413,opt)
-rltool(sys_9413)
+sys_motor = tf(num,den);
+step(sys_motor,opt)
+rltool(sys_motor)
 %% Current controller
 kp=93.2089669359914;
 ki=kp*20226.7671774592;
