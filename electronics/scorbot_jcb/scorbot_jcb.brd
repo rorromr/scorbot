@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.4.0">
+<eagle version="7.6.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -9,6 +9,20 @@
 <grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
+<layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
+<layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
+<layer number="4" name="Route4" color="1" fill="4" visible="no" active="no"/>
+<layer number="5" name="Route5" color="4" fill="4" visible="no" active="no"/>
+<layer number="6" name="Route6" color="1" fill="8" visible="no" active="no"/>
+<layer number="7" name="Route7" color="4" fill="8" visible="no" active="no"/>
+<layer number="8" name="Route8" color="1" fill="2" visible="no" active="no"/>
+<layer number="9" name="Route9" color="4" fill="2" visible="no" active="no"/>
+<layer number="10" name="Route10" color="1" fill="7" visible="no" active="no"/>
+<layer number="11" name="Route11" color="4" fill="7" visible="no" active="no"/>
+<layer number="12" name="Route12" color="1" fill="5" visible="no" active="no"/>
+<layer number="13" name="Route13" color="4" fill="5" visible="no" active="no"/>
+<layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
+<layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
 <layer number="17" name="Pads" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
@@ -1371,6 +1385,34 @@ grid 2.5 mm, outline 2.5 x 5 mm</description>
 <text x="-2.286" y="1.524" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="-2.286" y="-2.794" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
 </package>
+<package name="0309/12">
+<description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;
+type 0309, grid 12.5 mm</description>
+<wire x1="6.35" y1="0" x2="5.08" y2="0" width="0.6096" layer="51"/>
+<wire x1="-6.35" y1="0" x2="-5.08" y2="0" width="0.6096" layer="51"/>
+<wire x1="-4.318" y1="1.27" x2="-4.064" y2="1.524" width="0.1524" layer="21" curve="-90"/>
+<wire x1="-4.318" y1="-1.27" x2="-4.064" y2="-1.524" width="0.1524" layer="21" curve="90"/>
+<wire x1="4.064" y1="-1.524" x2="4.318" y2="-1.27" width="0.1524" layer="21" curve="90"/>
+<wire x1="4.064" y1="1.524" x2="4.318" y2="1.27" width="0.1524" layer="21" curve="-90"/>
+<wire x1="-4.318" y1="-1.27" x2="-4.318" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-4.064" y1="1.524" x2="-3.429" y2="1.524" width="0.1524" layer="21"/>
+<wire x1="-3.302" y1="1.397" x2="-3.429" y2="1.524" width="0.1524" layer="21"/>
+<wire x1="-4.064" y1="-1.524" x2="-3.429" y2="-1.524" width="0.1524" layer="21"/>
+<wire x1="-3.302" y1="-1.397" x2="-3.429" y2="-1.524" width="0.1524" layer="21"/>
+<wire x1="3.302" y1="1.397" x2="3.429" y2="1.524" width="0.1524" layer="21"/>
+<wire x1="3.302" y1="1.397" x2="-3.302" y2="1.397" width="0.1524" layer="21"/>
+<wire x1="3.302" y1="-1.397" x2="3.429" y2="-1.524" width="0.1524" layer="21"/>
+<wire x1="3.302" y1="-1.397" x2="-3.302" y2="-1.397" width="0.1524" layer="21"/>
+<wire x1="4.064" y1="1.524" x2="3.429" y2="1.524" width="0.1524" layer="21"/>
+<wire x1="4.064" y1="-1.524" x2="3.429" y2="-1.524" width="0.1524" layer="21"/>
+<wire x1="4.318" y1="-1.27" x2="4.318" y2="1.27" width="0.1524" layer="21"/>
+<pad name="1" x="-6.35" y="0" drill="0.8128" shape="octagon"/>
+<pad name="2" x="6.35" y="0" drill="0.8128" shape="octagon"/>
+<text x="-4.191" y="1.905" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-3.175" y="-0.6858" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<rectangle x1="4.318" y1="-0.3048" x2="5.1816" y2="0.3048" layer="21"/>
+<rectangle x1="-5.1816" y1="-0.3048" x2="-4.318" y2="0.3048" layer="21"/>
+</package>
 </packages>
 </library>
 </libraries>
@@ -1568,6 +1610,12 @@ design rules under a new name.</description>
 <element name="HB_OUT" library="uchile_robotics_eagle_lib" package="METALTEX-2S" value="METALTEX-2SHORT" x="93.98" y="33.02"/>
 <element name="XMC4800" library="uchile_robotics_eagle_lib" package="UNO_R3_SHIELD_ONLY_PADS" value="ARDUINO_R3_SHIELDONLY_PADS" x="86.36" y="25.4" rot="R90"/>
 <element name="C1" library="rcl" package="C025-025X050" value="" x="3.81" y="-3.81"/>
+<element name="R1" library="rcl" package="0309/12" value="1k" x="7.62" y="-8.89"/>
+<element name="R2" library="rcl" package="0309/12" value="1k" x="7.62" y="-15.24"/>
+<element name="R3" library="rcl" package="0309/12" value="1k" x="7.62" y="-21.59"/>
+<element name="R4" library="rcl" package="0309/12" value="2k" x="7.62" y="-27.94"/>
+<element name="R5" library="rcl" package="0309/12" value="2k" x="7.62" y="-34.29"/>
+<element name="R6" library="rcl" package="0309/12" value="2k" x="7.62" y="-40.64"/>
 </elements>
 <signals>
 <signal name="+5V">
@@ -1582,11 +1630,21 @@ design rules under a new name.</description>
 <contactref element="XMC4800" pad="GND@1"/>
 <contactref element="XMC4800" pad="GND@2"/>
 <contactref element="C1" pad="2"/>
+<contactref element="R4" pad="1"/>
+<contactref element="R5" pad="1"/>
+<contactref element="R6" pad="1"/>
+<contactref element="HBRIDGE" pad="GND@1"/>
+<contactref element="HBRIDGE" pad="GND@0"/>
 <wire x1="52.07" y1="76.2" x2="54.61" y2="76.2" width="0" layer="19" extent="1-1"/>
-<wire x1="68.58" y1="27.94" x2="54.61" y2="76.2" width="0" layer="19" extent="1-1"/>
+<wire x1="59.69" y1="45.72" x2="54.61" y2="76.2" width="0" layer="19" extent="1-1"/>
+<wire x1="59.69" y1="43.18" x2="59.69" y2="45.72" width="0" layer="19" extent="1-1"/>
+<wire x1="68.58" y1="27.94" x2="59.69" y2="43.18" width="0" layer="19" extent="1-1"/>
 <wire x1="70.52" y1="11.1125" x2="68.58" y2="27.94" width="0" layer="19" extent="1-1"/>
 <wire x1="40.68" y1="9.2" x2="70.52" y2="11.1125" width="0" layer="19" extent="1-1"/>
 <wire x1="5.08" y1="-3.81" x2="40.68" y2="9.2" width="0" layer="19" extent="1-1"/>
+<wire x1="1.27" y1="-27.94" x2="5.08" y2="-3.81" width="0" layer="19" extent="1-1"/>
+<wire x1="1.27" y1="-34.29" x2="1.27" y2="-27.94" width="0" layer="19" extent="1-1"/>
+<wire x1="1.27" y1="-40.64" x2="1.27" y2="-34.29" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$1">
 <contactref element="CURRENT_SENSOR" pad="8"/>
@@ -1595,6 +1653,8 @@ design rules under a new name.</description>
 </signal>
 <signal name="N$2">
 <contactref element="CURRENT_SENSOR" pad="7"/>
+<contactref element="HB_OUT" pad="P1"/>
+<wire x1="44.96" y1="15.17" x2="91.44" y2="34.798" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$3">
 <contactref element="HB_OUT" pad="P2"/>
@@ -1607,6 +1667,77 @@ design rules under a new name.</description>
 <contactref element="C1" pad="1"/>
 <wire x1="41.98" y1="9.2" x2="59.69" y2="76.2" width="0" layer="19" extent="1-1"/>
 <wire x1="2.54" y1="-3.81" x2="41.98" y2="9.2" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="MISO">
+<contactref element="XMC4800" pad="D12"/>
+<contactref element="CURRENT_SENSOR" pad="3"/>
+<wire x1="42.78" y1="9.2" x2="63.5" y2="27.94" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="!CS">
+<contactref element="XMC4800" pad="D10"/>
+<contactref element="CURRENT_SENSOR" pad="5"/>
+<wire x1="44.38" y1="9.2" x2="58.42" y2="27.94" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SCLK">
+<contactref element="CURRENT_SENSOR" pad="4"/>
+<contactref element="XMC4800" pad="D13"/>
+<wire x1="43.58" y1="9.2" x2="66.04" y2="27.94" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="IN1">
+<contactref element="XMC4800" pad="D6"/>
+<contactref element="HBRIDGE" pad="D3"/>
+<wire x1="11.43" y1="58.42" x2="46.99" y2="27.94" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="IN2">
+<contactref element="XMC4800" pad="D5"/>
+<contactref element="HBRIDGE" pad="D11"/>
+<wire x1="11.43" y1="36.83" x2="44.45" y2="27.94" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="INH1">
+<contactref element="XMC4800" pad="D4"/>
+<contactref element="HBRIDGE" pad="D12"/>
+<wire x1="11.43" y1="34.29" x2="41.91" y2="27.94" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="INH2">
+<contactref element="XMC4800" pad="D7"/>
+<contactref element="HBRIDGE" pad="D13"/>
+<wire x1="11.43" y1="31.75" x2="49.53" y2="27.94" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="N$9">
+<contactref element="DB9" pad="P4"/>
+<contactref element="R1" pad="2"/>
+<wire x1="13.97" y1="-8.89" x2="73.26" y2="11.1125" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="N$10">
+<contactref element="R2" pad="2"/>
+<contactref element="DB9" pad="P6"/>
+<wire x1="13.97" y1="-15.24" x2="79.81" y2="9.2075" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="N$11">
+<contactref element="DB9" pad="P8"/>
+<contactref element="R3" pad="2"/>
+<wire x1="13.97" y1="-21.59" x2="74.73" y2="9.2075" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="HOME">
+<contactref element="XMC4800" pad="D8"/>
+<contactref element="R4" pad="2"/>
+<contactref element="R1" pad="1"/>
+<wire x1="1.27" y1="-8.89" x2="53.34" y2="27.94" width="0" layer="19" extent="1-1"/>
+<wire x1="13.97" y1="-27.94" x2="1.27" y2="-8.89" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="ENC_A">
+<contactref element="XMC4800" pad="D2"/>
+<contactref element="R5" pad="2"/>
+<contactref element="R2" pad="1"/>
+<wire x1="1.27" y1="-15.24" x2="36.83" y2="27.94" width="0" layer="19" extent="1-1"/>
+<wire x1="13.97" y1="-34.29" x2="1.27" y2="-15.24" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="ENC_B">
+<contactref element="XMC4800" pad="D3"/>
+<contactref element="R6" pad="2"/>
+<contactref element="R3" pad="1"/>
+<wire x1="1.27" y1="-21.59" x2="39.37" y2="27.94" width="0" layer="19" extent="1-1"/>
+<wire x1="13.97" y1="-40.64" x2="1.27" y2="-21.59" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>
