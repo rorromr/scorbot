@@ -1,0 +1,50 @@
+XMC4800
+=======
+
+Current sensor
+--------------
+D12 MISO  #14 P3.7    *
+D11 MOSI  #13 P3.8  
+D13 SCLK  #12 P3.9    *
+D10 CS    #11 P3.10   *
+
+H Bridge
+---------
+D6 PWM_CCU8_0 CH2 Direct out #65 P2.11 -> IN1  *
+D5 PWM_CCU8_1 CH2 Invert out #64 P2.12 -> IN2  *
+
+D4 P1.8 -> INH1 *
+D7 P1.9 -> INH2 *
+
+PWM_CCU4_0 CH out #10 P3.11 LED8
+
+Encoder
+-------
+D2 P1.0 ERU0.3B0 -> A  *
+D3 P1.1 ERU0.3A0 -> B  *
+
+Switch
+------
+D8 P1.10 -> Home  *
+D9 P1.11
+
+Motor shield
+============
+
+A0 IS_1
+A1 IS_2
+D13 INH_2
+D12 INH_1
+D11 IN_2
+D3  IN_1
+GND GND
+
+
+
+
+
+
+
+
+
+
