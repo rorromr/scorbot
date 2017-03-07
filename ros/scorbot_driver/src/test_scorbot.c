@@ -26,26 +26,34 @@ boolean inOP;
 uint8 currentgroup = 0;
 
 typedef union _uint8_bit_t{
-	uint8_t val;
-	struct {
-		unsigned bit1 :1;
-		unsigned bit2 :1;
-		unsigned bit3 :1;
-		unsigned bit4 :1;
-		unsigned bit5 :1;
-		unsigned bit6 :1;
-		unsigned bit7 :1;
-		unsigned bit8 :1;
-	};
+  uint8_t val;
+  struct {
+    unsigned bit1 :1;
+    unsigned bit2 :1;
+    unsigned bit3 :1;
+    unsigned bit4 :1;
+    unsigned bit5 :1;
+    unsigned bit6 :1;
+    unsigned bit7 :1;
+    unsigned bit8 :1;
+  };
 } uint8_bit_t;
 
-typedef struct _xmc_test_t {
-	uint16_t int1;
-	uint16_t int2;
-	uint16_t int3;
-	uint16_t int4;
-	uint8_bit_t button;
-}__attribute__((packed)) xmc_test_t;
+typedef struct _setpoint_t {
+  uint16_t int1;
+  uint16_t int2;
+  uint16_t int3;
+  uint16_t int4;
+  uint8_bit_t button;
+}__attribute__((packed)) setpoint_t;
+
+typedef struct _joint_data_t {
+  uint16_t int1;
+  uint16_t int2;
+  uint16_t int3;
+  uint16_t int4;
+  uint8_bit_t button;
+}__attribute__((packed)) joint_data_t;
 
 void simpletest(char *ifname)
 {
@@ -53,7 +61,6 @@ void simpletest(char *ifname)
     needlf = FALSE;
     inOP = FALSE;
 
-    xmc_test_t data;
     uint16_t brightness = 1000U;
 
    printf("Starting simple test\n");
@@ -65,136 +72,136 @@ void simpletest(char *ifname)
       /* find and auto-config slaves */
 
 
-       if ( ec_config_init(FALSE) > 0 )
+      if ( ec_config_init(FALSE) > 0 )
       {
-         printf("%d slaves found and configured.\n",ec_slavecount);
+        printf("%d slaves found and configured.\n",ec_slavecount);
 
-         ec_config_map(&IOmap);
+        ec_config_map(&IOmap);
 
-         ec_configdc();
+        ec_configdc();
 
-         printf("Slaves mapped, state to SAFE_OP.\n");
-         /* wait for all slaves to reach SAFE_OP state */
-         ec_statecheck(0, EC_STATE_SAFE_OP,  EC_TIMEOUTSTATE * 4);
+        printf("Slaves mapped, state to SAFE_OP.\n");
+        /* wait for all slaves to reach SAFE_OP state */
+        ec_statecheck(0, EC_STATE_SAFE_OP,  EC_TIMEOUTSTATE * 4);
 
 
-         oloop = ec_slave[1].Obytes;
-         printf("Output bytes: %d", oloop);
-         if ((oloop == 0) && (ec_slave[1].Obits > 0)) oloop = 1;
-         if (oloop > 10) oloop = 10;
-         iloop = ec_slave[1].Ibytes;
-         printf("Input bytes: %d", iloop);
-         if ((iloop == 0) && (ec_slave[1].Ibits > 0)) iloop = 1;
-         if (iloop > 10) iloop = 10;
+        oloop = ec_slave[1].Obytes;
+        printf("Output bytes: %d\n", oloop);
+        if ((oloop == 0) && (ec_slave[1].Obits > 0)) oloop = 1;
+        //if (oloop > 10) oloop = 10;
+        iloop = ec_slave[1].Ibytes;
+        printf("Input bytes: %d\n", iloop);
+        if ((iloop == 0) && (ec_slave[1].Ibits > 0)) iloop = 1;
+        //if (iloop > 10) iloop = 10;
 
-         printf("segments : %d : %d %d %d %d\n",ec_group[0].nsegments ,ec_group[0].IOsegment[0],ec_group[0].IOsegment[1],ec_group[0].IOsegment[2],ec_group[0].IOsegment[3]);
+        printf("Segments : %d : %d %d %d %d\n",ec_group[0].nsegments ,ec_group[0].IOsegment[0],ec_group[0].IOsegment[1],ec_group[0].IOsegment[2],ec_group[0].IOsegment[3]);
 
-         /* Request for OPERATIONAL */
-         printf("Request operational state for all slaves\n");
-         expectedWKC = (ec_group[0].outputsWKC * 2) + ec_group[0].inputsWKC;
-         printf("Calculated workcounter %d\n", expectedWKC);
-         ec_slave[0].state = EC_STATE_OPERATIONAL;
-         /* send one valid process data to make outputs in slaves happy*/
-         ec_send_processdata();
-         ec_receive_processdata(EC_TIMEOUTRET);
-         /* request OP state for all slaves */
-         ec_writestate(0);
-         chk = 40;
-         /* wait for all slaves to reach OP state */
-         do
-         {
+        /* Request for OPERATIONAL */
+        printf("Request operational state for all slaves\n");
+        expectedWKC = (ec_group[0].outputsWKC * 2) + ec_group[0].inputsWKC;
+        printf("Calculated workcounter %d\n", expectedWKC);
+        ec_slave[0].state = EC_STATE_OPERATIONAL;
+        /* send one valid process data to make outputs in slaves happy*/
+        ec_send_processdata();
+        ec_receive_processdata(EC_TIMEOUTRET);
+        /* request OP state for all slaves */
+        ec_writestate(0);
+        chk = 40;
+        /* wait for all slaves to reach OP state */
+        do
+        {
+          ec_send_processdata();
+          ec_receive_processdata(EC_TIMEOUTRET);
+          ec_statecheck(0, EC_STATE_OPERATIONAL, 50000);
+        }
+        while (chk-- && (ec_slave[0].state != EC_STATE_OPERATIONAL));
+        if (ec_slave[0].state == EC_STATE_OPERATIONAL )
+        {
+          printf("Operational state reached for all slaves.\n");
+          inOP = TRUE;
+              /* cyclic loop */
+          for(i = 1; i <= 500; i++)
+          {
             ec_send_processdata();
-            ec_receive_processdata(EC_TIMEOUTRET);
-            ec_statecheck(0, EC_STATE_OPERATIONAL, 50000);
-         }
-         while (chk-- && (ec_slave[0].state != EC_STATE_OPERATIONAL));
-         if (ec_slave[0].state == EC_STATE_OPERATIONAL )
-         {
-            printf("Operational state reached for all slaves.\n");
-            inOP = TRUE;
-                /* cyclic loop */
-            for(i = 1; i <= 50; i++)
+            wkc = ec_receive_processdata(EC_TIMEOUTRET);
+
+            if(wkc >= expectedWKC)
             {
-               ec_send_processdata();
-               wkc = ec_receive_processdata(EC_TIMEOUTRET);
+              printf("Processdata cycle %4d, WKC %d , O:", i, wkc);
 
-                    if(wkc >= expectedWKC)
-                    {
-                        printf("Processdata cycle %4d, WKC %d , O:", i, wkc);
+              for(j = 0 ; j < oloop; j++)
+              {
+                  printf(" %2.2x", *(ec_slave[1].outputs + j));
+              }
 
-                        for(j = 0 ; j < oloop; j++)
-                        {
-                            printf(" %2.2x", *(ec_slave[1].outputs + j));
-                        }
+              printf(" I:");
+              for(j = 0 ; j < iloop; j++)
+              {
+                  printf(" %2.2x", *(ec_slave[1].inputs + j));
+              }
+              joint_data_t data = *((joint_data_t*) (ec_slave[1].inputs));
 
-                        printf(" I:");
-                        for(j = 0 ; j < iloop; j++)
-                        {
-                            printf(" %2.2x", *(ec_slave[1].inputs + j));
-                        }
-                        data = *((xmc_test_t*) (ec_slave[1].inputs));
+              printf(" Buttons %d %d ", data.button.bit1, data.button.bit2);
 
-                        printf(" Buttons %d %d ", data.button.bit1, data.button.bit2);
+              setpoint_t* data_out = ((setpoint_t*) (ec_slave[1].outputs));
+              data_out->button.bit1 = ~data_out->button.bit1;
+              data_out->int1 = (brightness+=1000);
 
-                        xmc_test_t* data_out = ((xmc_test_t*) (ec_slave[1].outputs));
-                        data_out->button.bit1 = ~data_out->button.bit1;
-                        data_out->int1 = (brightness+=1000);
-
-                        printf(" T:%"PRId64"\r",ec_DCtime);
-                        needlf = TRUE;
-                    }
-                    osal_usleep(20000);
-
-                }
-                inOP = FALSE;
+              printf(" T:%"PRId64"\r",ec_DCtime);
+              needlf = TRUE;
             }
-            else
-            {
-                printf("Not all slaves reached operational state.\n");
-                ec_readstate();
-                for(i = 1; i<=ec_slavecount ; i++)
-                {
-                    if(ec_slave[i].state != EC_STATE_OPERATIONAL)
-                    {
-                        printf("Slave %d State=0x%2.2x StatusCode=0x%4.4x : %s\n",
-                            i, ec_slave[i].state, ec_slave[i].ALstatuscode, ec_ALstatuscode2string(ec_slave[i].ALstatuscode));
-                    }
-                }
-            }
-            printf("\nRequest init state for all slaves\n");
-            ec_slave[0].state = EC_STATE_INIT;
-            /* request INIT state for all slaves */
-            ec_writestate(0);
-
-            ec_slave[0].state = EC_STATE_INIT;
-            /* request INIT state for all slaves */
-            ec_writestate(0);
-			chk = 40;
-			/* wait for all slaves to reach OP state */
-			do
-			{
-			   ec_send_processdata();
-			   ec_receive_processdata(EC_TIMEOUTRET);
-			   ec_statecheck(0, EC_STATE_INIT, 50000);
-			}
-			while (chk-- && (ec_slave[0].state != EC_STATE_INIT));
-			if (ec_slave[0].state == EC_STATE_INIT )
-			{
-				printf("\nRequest init state for all slaves [OK]\n");
-			}
-			else
-			{
-				 printf("Not all slaves reached init state. [FAIL]\n");
-			}
-
+            osal_usleep(20000);
+          }
+          inOP = FALSE;
         }
         else
         {
-            printf("No slaves found!\n");
+          printf("Not all slaves reached operational state.\n");
+          ec_readstate();
+          for(i = 1; i<=ec_slavecount ; i++)
+          {
+            if(ec_slave[i].state != EC_STATE_OPERATIONAL)
+            {
+                printf("Slave %d State=0x%2.2x StatusCode=0x%4.4x : %s\n",
+                  i, ec_slave[i].state, ec_slave[i].ALstatuscode, ec_ALstatuscode2string(ec_slave[i].ALstatuscode));
+            }
+          }
         }
-        printf("End simple test, close socket\n");
-        /* stop SOEM, close socket */
-        ec_close();
+
+        printf("\nRequest init state for all slaves\n");
+        ec_slave[0].state = EC_STATE_INIT;
+        /* request INIT state for all slaves */
+        ec_writestate(0);
+
+        ec_slave[0].state = EC_STATE_INIT;
+        /* request INIT state for all slaves */
+        ec_writestate(0);
+        chk = 40;
+        /* wait for all slaves to reach OP state */
+        do
+        {
+          ec_send_processdata();
+          ec_receive_processdata(EC_TIMEOUTRET);
+          ec_statecheck(0, EC_STATE_INIT, 50000);
+        }
+        while (chk-- && (ec_slave[0].state != EC_STATE_INIT));
+        if (ec_slave[0].state == EC_STATE_INIT )
+        {
+          printf("\nRequest init state for all slaves [OK]\n");
+        }
+        else
+        {
+          printf("Not all slaves reached init state. [FAIL]\n");
+        }
+
+      }
+      else
+      {
+          printf("No slaves found!\n");
+      }
+      printf("End simple test, close socket\n");
+      /* stop SOEM, close socket */
+      ec_close();
     }
     else
     {
@@ -266,13 +273,13 @@ OSAL_THREAD_FUNC ecatcheck( void *ptr )
                   }
                   else
                   {
-                     ec_slave[slave].islost = FALSE;
-                     printf("MESSAGE : slave %d found\n",slave);
+                    ec_slave[slave].islost = FALSE;
+                    printf("MESSAGE : slave %d found\n",slave);
                   }
                }
             }
             if(!ec_group[currentgroup].docheckstate)
-               printf("OK : all slaves resumed OPERATIONAL.\n");
+              printf("OK : all slaves resumed OPERATIONAL.\n");
         }
         osal_usleep(10000);
     }
@@ -280,21 +287,20 @@ OSAL_THREAD_FUNC ecatcheck( void *ptr )
 
 int main(int argc, char *argv[])
 {
-   printf("SOEM (Simple Open EtherCAT Master)\nSimple test\n");
+  printf("SOEM (Simple Open EtherCAT Master)\nSimple test\n");
 
-   if (argc > 1)
-   {
-      /* create thread to handle slave error handling in OP */
-//      pthread_create( &thread1, NULL, (void *) &ecatcheck, (void*) &ctime);
-      osal_thread_create(&thread1, 128000, &ecatcheck, (void*) &ctime);
-      /* start cyclic part */
-      simpletest(argv[1]);
-   }
-   else
-   {
-      printf("Usage: simple_test ifname1\nifname = eth0 for example\n");
-   }
+  if (argc > 1)
+  {
+    /* create thread to handle slave error handling in OP */
+    osal_thread_create(&thread1, 128000, &ecatcheck, (void*) &ctime);
+    /* start cyclic part */
+    simpletest(argv[1]);
+  }
+  else
+  {
+    printf("Usage: simple_test ifname1\nifname = eth0 for example\n");
+  }
 
-   printf("End program\n");
-   return (0);
+  printf("End program\n");
+  return (0);
 }
