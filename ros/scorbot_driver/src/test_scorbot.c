@@ -25,35 +25,24 @@ volatile int wkc;
 boolean inOP;
 uint8 currentgroup = 0;
 
-typedef union _uint8_bit_t{
-  uint8_t val;
-  struct {
-    unsigned bit1 :1;
-    unsigned bit2 :1;
-    unsigned bit3 :1;
-    unsigned bit4 :1;
-    unsigned bit5 :1;
-    unsigned bit6 :1;
-    unsigned bit7 :1;
-    unsigned bit8 :1;
-  };
-} uint8_bit_t;
+typedef struct PACKED {
+  uint16_t controlRegA;
+  uint16_t controlRegb;
+  int16_t  currentRef;
+  int16_t currentLim;
+  uint16_t pidCurrentKp;
+  uint16_t pidCurrentKi;
+  uint16_t pidCurrentKd;
+} setpoint_t;
 
-typedef struct _setpoint_t {
-  uint16_t int1;
-  uint16_t int2;
-  uint16_t int3;
-  uint16_t int4;
-  uint8_bit_t button;
-}__attribute__((packed)) setpoint_t;
+typedef struct PACKED {
+  int16_t encPosition;
+  int16_t encSpeed;
+  int16_t current;
+  uint16_t limits;
+} joint_data_t;
 
-typedef struct _joint_data_t {
-  uint16_t int1;
-  uint16_t int2;
-  uint16_t int3;
-  uint16_t int4;
-  uint8_bit_t button;
-}__attribute__((packed)) joint_data_t;
+int16_t currentRef = 0;
 
 void simpletest(char *ifname)
 {
@@ -74,7 +63,7 @@ void simpletest(char *ifname)
 
       if ( ec_config_init(FALSE) > 0 )
       {
-        printf("%d slaves found and configured.\n",ec_slavecount);
+        printf("%d slaves found and configured.\n", ec_slavecount);
 
         ec_config_map(&IOmap);
 
@@ -120,14 +109,14 @@ void simpletest(char *ifname)
           printf("Operational state reached for all slaves.\n");
           inOP = TRUE;
               /* cyclic loop */
-          for(i = 1; i <= 500; i++)
+          for(i = 1; i <= 2000; i++)
           {
             ec_send_processdata();
             wkc = ec_receive_processdata(EC_TIMEOUTRET);
 
             if(wkc >= expectedWKC)
             {
-              printf("Processdata cycle %4d, WKC %d , O:", i, wkc);
+/*              printf("Processdata cycle %4d, WKC %d , O:", i, wkc);
 
               for(j = 0 ; j < oloop; j++)
               {
@@ -138,19 +127,19 @@ void simpletest(char *ifname)
               for(j = 0 ; j < iloop; j++)
               {
                   printf(" %2.2x", *(ec_slave[1].inputs + j));
-              }
+              }*/
               joint_data_t data = *((joint_data_t*) (ec_slave[1].inputs));
 
-              printf(" Buttons %d %d ", data.button.bit1, data.button.bit2);
+              /*printf(" Lim %d ", data.limits);*/
 
               setpoint_t* data_out = ((setpoint_t*) (ec_slave[1].outputs));
-              data_out->button.bit1 = ~data_out->button.bit1;
-              data_out->int1 = (brightness+=1000);
+              data_out->currentRef = currentRef;
+              currentRef = currentRef == 0 ? 30000 : 0;
 
-              printf(" T:%"PRId64"\r",ec_DCtime);
+              /*printf(" T:%"PRId64"\r",ec_DCtime);*/
               needlf = TRUE;
             }
-            osal_usleep(20000);
+            osal_usleep(1000);
           }
           inOP = FALSE;
         }

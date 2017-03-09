@@ -48,6 +48,6 @@ To provide a executable with raw access to a ethernet device use:
 sudo setcap cap_net_raw+ep [executable]
 ```
 
-This have to be done whenever the executable is created or replaces (e.g. after building).
+This have to be done whenever the executable is created or replaced (e.g. after building).
 
 

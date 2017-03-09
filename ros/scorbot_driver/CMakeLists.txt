@@ -134,6 +134,10 @@ include_directories(
 # add_executable(scorbot_driver_node src/scorbot_driver_node.cpp)
 add_executable(test_scorbot src/test_scorbot.c)
 target_link_libraries(test_scorbot ${catkin_LIBRARIES} ${SOEM_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(scorbot_driver src/ethercat_interface.cpp)
+target_link_libraries(scorbot_driver ${catkin_LIBRARIES} ${SOEM_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
 # add_custom_command(
 #     TARGET test_scorbot
 #     POST_BUILD
