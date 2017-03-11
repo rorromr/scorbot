@@ -8,8 +8,11 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules/")
 find_package(Soem)
 find_package(Threads)
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  rospy
+    roscpp
+    std_msgs
+    message_generation
+    hardware_interface
+    controller_manager
 )
 
 ## System dependencies are found with CMake's conventions
@@ -116,6 +119,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
   ${SOEM_INCLUDE_DIR}
 )
@@ -135,7 +139,7 @@ include_directories(
 add_executable(test_scorbot src/test_scorbot.c)
 target_link_libraries(test_scorbot ${catkin_LIBRARIES} ${SOEM_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(scorbot_driver src/ethercat_interface.cpp)
+add_executable(scorbot_driver src/scorbot_control_hw.cpp src/scorbot_control_loop.cpp src/ethercat_interface.cpp src/scorbot_hardware_interface.cpp)
 target_link_libraries(scorbot_driver ${catkin_LIBRARIES} ${SOEM_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 # add_custom_command(
