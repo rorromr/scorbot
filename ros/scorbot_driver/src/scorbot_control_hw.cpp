@@ -3,7 +3,7 @@
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "dynamixel_control_hw");
+  ros::init(argc, argv, "scorbot_control_hw");
   ros::NodeHandle nh;
 
   // Run the hardware interface node

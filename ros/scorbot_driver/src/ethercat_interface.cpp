@@ -8,7 +8,8 @@
 namespace scorbot_driver
 {
     EthercatMaster::EthercatMaster(const std::string& ifname):
-          _ifname(ifname){}
+          _ifname(ifname),
+          _expecterWKC(0UL){}
 
     EthercatMaster::~EthercatMaster()
     {
@@ -27,11 +28,11 @@ namespace scorbot_driver
       while (init_attempts-- && (ec_slave[0].state != EC_STATE_INIT));
       if (ec_slave[0].state == EC_STATE_INIT )
       {
-        ROS_INFO("Init state reached for all slaves.");
+        std::cout << "Init state (INIT) reached for all slaves." << std::endl;
       }
       else
       {
-        ROS_FATAL("Not all slaves reached init state.");
+        std::cout << "Not all slaves reached init state." << std::endl;
       }
       ec_close();
     }
@@ -40,6 +41,7 @@ namespace scorbot_driver
     {
       /* Add driver */
       _drivers.push_back(driver);
+      ROS_INFO_STREAM("Register driver " << driver->getName().c_str());
     }
 
     bool EthercatMaster::configure() {
@@ -70,9 +72,11 @@ namespace scorbot_driver
           {
             ROS_WARN("Number of drivers is less than the number of slaves.");
           }
-          for (std::size_t i = 1; i <= ec_slavecount, i < driver_size; i++)
+          for (std::size_t driver_idx = 0, slave_idx = 1;
+               driver_idx < driver_size, slave_idx <= ec_slavecount;
+               ++driver_idx, ++slave_idx)
           {
-            _drivers[i]->configure(&ec_slave[i], i);
+            _drivers[driver_idx]->configure(&ec_slave[slave_idx], slave_idx);
           }
           /* Map slaves */
           ec_config_map(&_IOmap);
@@ -105,7 +109,7 @@ namespace scorbot_driver
       ec_statecheck(0, EC_STATE_SAFE_OP, EC_TIMEOUTSTATE);
       if (ec_slave[0].state == EC_STATE_SAFE_OP)
       {
-        ROS_INFO("Safe-operational state reached for all slaves.");
+        ROS_INFO("Safe-operational (SAFE_OP) state reached for all slaves.");
         while (EcatError)
         {
           ROS_ERROR_STREAM(ec_elist2string());
@@ -127,7 +131,7 @@ namespace scorbot_driver
         /* Not return false until try to reach OP */
       }
       /* Request OP */
-      ROS_INFO("Request operational state for all slaves.");
+      ROS_INFO("Request operational state (OP) for all slaves.");
       ec_slave[0].state = EC_STATE_OPERATIONAL;
       /* Send one valid process data to make outputs in slaves happy */
       ec_send_processdata();
@@ -138,11 +142,20 @@ namespace scorbot_driver
       {
         ROS_ERROR_STREAM(ec_elist2string());
       }
+      int attempts = 40;
       /* Wait for all slaves to reach OP state */
-      ec_statecheck(0, EC_STATE_OPERATIONAL, EC_TIMEOUTSTATE);
-      if (ec_slave[0].state == EC_STATE_OPERATIONAL)
+      do
       {
-        ROS_INFO("Operational state reached for all slaves.");
+        ec_send_processdata();
+        ec_receive_processdata(EC_TIMEOUTRET);
+        ec_statecheck(0, EC_STATE_OPERATIONAL, 50000);
+      }
+      while (attempts-- && (ec_slave[0].state != EC_STATE_OPERATIONAL));
+      if (ec_slave[0].state == EC_STATE_OPERATIONAL )
+      {
+        ROS_INFO("Operational state (OP) reached for all slaves.");
+        _expecterWKC = (ec_group[0].outputsWKC * 2) + ec_group[0].inputsWKC;
+        ROS_INFO_STREAM("Calculated workcounter " << _expecterWKC);
       }
       else
       {
@@ -165,7 +178,9 @@ namespace scorbot_driver
     void EthercatMaster::update()
     {
       bool success = true;
-      if (ec_receive_processdata(EC_TIMEOUTRET) == 0)
+
+
+      if (ec_receive_processdata(EC_TIMEOUTRET)  < _expecterWKC)
       {
         success = false;
         ROS_WARN("Receiving data failed");
@@ -173,7 +188,7 @@ namespace scorbot_driver
 
       if (success)
       {
-        /* Update drivers */
+      /* Update drivers */
         for(std::size_t i = 0; i < _drivers.size(); ++i)
         {
           _drivers[i]->update();
@@ -189,6 +204,8 @@ namespace scorbot_driver
       {
         ROS_ERROR_STREAM(ec_elist2string());
       }
+
+
     }
 
     const std::string& EthercatMaster::getInterfaceName()

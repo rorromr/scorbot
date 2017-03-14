@@ -29,6 +29,8 @@ namespace scorbot_driver
                 EthercatDriver(),
                 _joint_name(joint_name)
         {
+
+          _name = joint_name + "_controller";
           /* Init struct at zero */
           _set_point.controlRegA = 0U;
           _set_point.controlRegB = 0U;
@@ -62,6 +64,8 @@ namespace scorbot_driver
           /* Apply set point */
           setpoint_t* data_out = ((setpoint_t*) (_datap->outputs));
           *data_out = _set_point;
+          setpoint_t* data_out2 = ((setpoint_t*) (ec_slave[1].outputs));
+
         }
 
         const std::string& getJointName() const

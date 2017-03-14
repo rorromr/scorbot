@@ -18,6 +18,10 @@ namespace scorbot_driver
 
     void ScorbotHardwareInterface::update()
     {
+      for(std::size_t i = 0; i < _motors.size(); ++i)
+      {
+        _motors[i]->setPosition((int16_t) _joint_commands[i]);
+      }
       _master.update();
     }
 
@@ -39,7 +43,6 @@ namespace scorbot_driver
         _motors[i].reset(new ScorbotJointDriver(_motor_names[i]));
         /* Register joint driver on EtherCAT master */
         _master.registerDriver(boost::static_pointer_cast<EthercatDriver>(_motors[i]));
-
         /* Set ROS control memory address for JointStateInterface, using this ROS control
          * can read the joint information (joint angle, velocity and effort)
          */
@@ -62,15 +65,13 @@ namespace scorbot_driver
         int16_t current_pos = _motors[i]->getPosition();
         _motors[i]->setPosition(current_pos);
       }
-      // Register the hardware interfaces on RobotHW
-      registerInterface(&_jnt_state_interface);
-      registerInterface(&_jnt_pos_interface);
       // Init EtherCAT master
       _master.configure();
       _master.start();
+      // Register the hardware interfaces on RobotHW
+      registerInterface(&_jnt_state_interface);
+      registerInterface(&_jnt_pos_interface);
     }
-
-
 
 
 }

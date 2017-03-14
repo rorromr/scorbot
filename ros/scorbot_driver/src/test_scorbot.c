@@ -108,6 +108,7 @@ void simpletest(char *ifname)
         {
           printf("Operational state reached for all slaves.\n");
           inOP = TRUE;
+          int prescaler = 0;
               /* cyclic loop */
           for(i = 1; i <= 2000; i++)
           {
@@ -134,7 +135,9 @@ void simpletest(char *ifname)
 
               setpoint_t* data_out = ((setpoint_t*) (ec_slave[1].outputs));
               data_out->currentRef = currentRef;
-              currentRef = currentRef == 0 ? 30000 : 0;
+              prescaler = prescaler > 100 ? 0 : prescaler+1;
+              if (prescaler==100)
+                currentRef = currentRef == 0 ? 32000 : 0;
 
               /*printf(" T:%"PRId64"\r",ec_DCtime);*/
               needlf = TRUE;

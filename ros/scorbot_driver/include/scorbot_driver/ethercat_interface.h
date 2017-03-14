@@ -28,6 +28,7 @@ namespace scorbot_driver
     private:
         uint8_t _IOmap[4096];
         std::string _ifname;
+        uint32_t _expecterWKC;
         std::vector<EthercatDriverPtr> _drivers;
     };
 }
