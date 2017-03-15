@@ -21,6 +21,7 @@ namespace scorbot_driver
       for(std::size_t i = 0; i < _motors.size(); ++i)
       {
         _motors[i]->setPosition((int16_t) _joint_commands[i]);
+        _joint_angles[i] = (double)_motors[i]->getPosition();
       }
       _master.update();
     }
