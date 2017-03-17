@@ -24,6 +24,21 @@
   <xacro:joint_pos_transmission joint="elbow"/>
   <xacro:joint_pos_transmission joint="pitch"/>
   <xacro:joint_pos_transmission joint="roll"/>
+  <!-- Joint limits in radians -->
+  <xacro:property name="base_upper_limit" value="1.0" />
+  <xacro:property name="base_lower_limit" value="-1.0" />
+
+  <xacro:property name="shoulder_upper_limit" value="1.0" />
+  <xacro:property name="shoulder_lower_limit" value="-1.0" />
+
+  <xacro:property name="elbow_upper_limit" value="1.0" />
+  <xacro:property name="elbow_lower_limit" value="-1.0" />
+
+  <xacro:property name="pitch_upper_limit" value="1.0" />
+  <xacro:property name="pitch_lower_limit" value="-1.0" />
+
+  <xacro:property name="roll_upper_limit" value="1.0" />
+  <xacro:property name="roll_lower_limit" value="-1.0" />
 
   <link
     name="base">
@@ -117,7 +132,7 @@
       link="body" />
     <axis
       xyz="0 0 1" />
-    <limit effort="30" velocity="1.0" lower="-1.0" upper="1.0" />
+    <limit effort="30" velocity="1.0" lower="${base_lower_limit}" upper="${base_upper_limit}" />
   </joint>
   <link
     name="upper_arm">
@@ -171,7 +186,7 @@
       link="upper_arm" />
     <axis
       xyz="0 1 0" />
-    <limit effort="30" velocity="1.0" lower="-1.0" upper="1.0" />
+    <limit effort="30" velocity="1.0" lower="${shoulder_lower_limit}" upper="${shoulder_upper_limit}" />
   </joint>
   <link
     name="forearm">
@@ -225,7 +240,7 @@
       link="forearm" />
     <axis
       xyz="0 1 0" />
-    <limit effort="30" velocity="1.0" lower="-1.0" upper="1.0" />
+    <limit effort="30" velocity="1.0" lower="${elbow_lower_limit}" upper="${elbow_upper_limit}" />
   </joint>
   <link
     name="flange">
@@ -279,7 +294,7 @@
       link="flange" />
     <axis
       xyz="0 1 0" />
-    <limit effort="30" velocity="1.0" lower="-1.0" upper="1.0" />
+    <limit effort="30" velocity="1.0" lower="${pitch_lower_limit}" upper="${pitch_upper_limit}" />
   </joint>
   <link name="tool" >
     <inertial>
@@ -298,11 +313,10 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0"
+        xyz="0.05 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://scorbot_description/meshes/flange.STL" />
+        <box size="0.05 0.05 0.05"/>
       </geometry>
       <material
         name="">
@@ -312,11 +326,10 @@
     </visual>
     <collision>
       <origin
-        xyz="0 0 0"
+        xyz="0.05 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://scorbot_description/meshes/flange.STL" />
+        <box size="0.05 0.05 0.05"/>
       </geometry>
     </collision>
   </link>
@@ -332,6 +345,6 @@
       link="tool" />
     <axis
       xyz="1 0 0" />
-    <limit effort="30" velocity="1.0" lower="-1.0" upper="1.0" />
+    <limit effort="30" velocity="1.0" lower="${roll_lower_limit}" upper="${roll_upper_limit}" />
   </joint>
 </robot>
