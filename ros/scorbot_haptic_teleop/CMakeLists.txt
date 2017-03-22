@@ -8,7 +8,7 @@ project(scorbot_haptic_teleop)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  phantom_omni
+  omni_common
   roscpp
   rospy
 )
