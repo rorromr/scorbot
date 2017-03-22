@@ -25,21 +25,26 @@
   <xacro:joint_pos_transmission joint="pitch"/>
   <xacro:joint_pos_transmission joint="roll"/>
 
+  <!-- Constants -->
+  <xacro:property name="M_PI" value="3.14159265359" />
+  <xacro:property name="DEG2RAD" value="${M_PI/180.0}" />
+
   <!-- Joint limits in radians -->
-  <xacro:property name="base_upper_limit" value="1.0" />
-  <xacro:property name="base_lower_limit" value="-1.0" />
+  <xacro:property name="base_upper_limit" value="${ 250.0/2*DEG2RAD}" />
+  <xacro:property name="base_lower_limit" value="${-250.0/2*DEG2RAD}" />
 
-  <xacro:property name="shoulder_upper_limit" value="1.0" />
-  <xacro:property name="shoulder_lower_limit" value="-1.0" />
+  <xacro:property name="shoulder_upper_limit" value="${ 170.0/2*DEG2RAD}" />
+  <xacro:property name="shoulder_lower_limit" value="${-170.0/2*DEG2RAD}" />
 
-  <xacro:property name="elbow_upper_limit" value="1.0" />
-  <xacro:property name="elbow_lower_limit" value="-1.0" />
+  <xacro:property name="elbow_upper_limit" value="${ 225.0/2*DEG2RAD}" />
+  <xacro:property name="elbow_lower_limit" value="${-225.0/2*DEG2RAD}" />
 
-  <xacro:property name="pitch_upper_limit" value="1.0" />
-  <xacro:property name="pitch_lower_limit" value="-1.0" />
+  <xacro:property name="pitch_upper_limit" value="${ 180.0/2*DEG2RAD}" />
+  <xacro:property name="pitch_lower_limit" value="${-180.0/2*DEG2RAD}" />
 
-  <xacro:property name="roll_upper_limit" value="1.0" />
-  <xacro:property name="roll_lower_limit" value="-1.0" />
+  <xacro:property name="roll_upper_limit" value="${ 360.0/2*DEG2RAD}" />
+  <xacro:property name="roll_lower_limit" value="${-360.0/2*DEG2RAD}" />
+
 
   <link
     name="base">
