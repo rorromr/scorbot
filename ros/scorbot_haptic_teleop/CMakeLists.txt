@@ -9,6 +9,7 @@ project(scorbot_haptic_teleop)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   omni_common
+  sensor_msgs
   roscpp
   rospy
 )
@@ -133,7 +134,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/scorbot_haptic_teleop_node.cpp)
+add_executable(haptic_teleop src/haptic_teleop.cpp)
+target_link_libraries(haptic_teleop ${catkin_LIBRARIES})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

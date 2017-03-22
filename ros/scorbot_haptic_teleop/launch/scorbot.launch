@@ -1,0 +1,9 @@
+<launch>
+
+    <!-- PHANToM Omni teleop -->
+    <node pkg="scorbot_haptic_teleop" type="haptic_teleop" name="teleop_omni" output="screen">
+        <remap from="haptic_joint_states" to="/omni/joint_states"/>
+    </node>
+
+
+</launch>
