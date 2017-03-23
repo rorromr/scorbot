@@ -1,0 +1,22 @@
+<launch>
+
+    <!-- PHANToM Omni teleop -->
+    <node pkg="scorbot_haptic_teleop" type="haptic_teleop" name="teleop_omni" output="screen">
+        <remap from="haptic_joint_states" to="/omni/joint_states"/>
+        <remap from="shadow_joint_states" to="/scorbot_shadow/joint_states"/>
+    </node>
+
+    <!-- Shadow robot -->
+    <group ns="scorbot_shadow">
+        <!-- URDF -->
+        <param name="robot_description" command="$(find xacro)/xacro.py '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
+        <!-- TF -->
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+            <param name="tf_prefix " value="scorbot_shadow"/>
+        </node>
+    </group>
+
+    <!-- RViz with shadow robot -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_haptic_teleop)/config/teleop.rviz" />
+
+</launch>
