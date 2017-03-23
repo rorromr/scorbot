@@ -1,13 +1,13 @@
-scorbot_controllers:
+scorbot:
   joint_state_controller:
     type: joint_state_controller/JointStateController
     publish_rate: 60
 
-  base_roll_controller:
+  base_controller:
     type: position_controllers/JointPositionController
-    joint: base_roll
+    joint: base
 
-scorbot_control_hw:
-  loop_frequency: 1000
-  cycle_time_error_threshold: 0.002
+  scorbot_control_hw:
+    loop_frequency: 1000
+    cycle_time_error_threshold: 0.002
 

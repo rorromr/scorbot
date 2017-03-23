@@ -6,13 +6,30 @@
   <rosparam file="$(find scorbot_driver)/config/controllers.yaml"/>
 
   <!-- launch our hardware interface -->
-  <node pkg="scorbot_driver" type="scorbot_driver" name="scorbot_control_hw" output="screen"/>
+  <node ns="scorbot" pkg="scorbot_driver" type="scorbot_driver" name="scorbot_control_hw" output="screen"/>
 
   <!-- Start a controller for our dummy robot -->
-  <node name="controller" pkg="controller_manager" type="spawner" respawn="false"
+  <node ns="scorbot" name="controller" pkg="controller_manager" type="spawner" respawn="false"
     output="screen" args="
-    /scorbot_controllers/joint_state_controller
-    /scorbot_controllers/base_roll_controller
+    --namespace /scorbot
+    /scorbot/joint_state_controller
+    /scorbot/base_controller
     " />
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="true" />
+    <param name="rate" value="100" />
+    <rosparam param="source_list">['/scorbot/joint_states']</rosparam>
+  </node>
+
+  <!-- URDF -->
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
+  <!-- TF -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+    <param name="tf_prefix " value="scorbot"/>
+  </node>
+
+  <!-- RViz with shadow robot -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_driver)/config/basic.rviz" />
 
 </launch>

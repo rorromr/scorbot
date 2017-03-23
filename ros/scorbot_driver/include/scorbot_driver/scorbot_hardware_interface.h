@@ -26,6 +26,8 @@ namespace scorbot_driver
       void update();
 
     private:
+      static const double ENC2RAD = 2.0*M_PI/(3.0*160.0*96.0);
+      static const double RAD2ENC = 1.0/(2.0*M_PI/(3.0*160.0*96.0));
       // not implemented
       ScorbotHardwareInterface(ScorbotHardwareInterface const&);
 
