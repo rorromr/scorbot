@@ -4,6 +4,8 @@
     <node pkg="scorbot_haptic_teleop" type="haptic_teleop" name="teleop_omni" output="screen">
         <remap from="haptic_joint_states" to="/omni/joint_states"/>
         <remap from="shadow_joint_states" to="/scorbot_shadow/joint_states"/>
+        <remap from="haptic_button" to="/omni/button"/>
+
     </node>
 
     <!-- Shadow robot -->
@@ -18,5 +20,11 @@
 
     <!-- RViz with shadow robot -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_haptic_teleop)/config/teleop.rviz" />
+
+    <!-- Base static TF -->
+    <node name="base_shadow_tf" pkg="tf" type="static_transform_publisher"
+          args="0 0 0 0 0 0 /scorbot/base /scorbot_shadow/base 60"/>
+    <node name="base_omni_tf" pkg="tf" type="static_transform_publisher"
+          args="0 0 0 0 0 0 /scorbot/base /omni/base 60"/>
 
 </launch>

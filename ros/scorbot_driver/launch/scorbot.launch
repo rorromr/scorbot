@@ -29,7 +29,7 @@
     <param name="tf_prefix " value="scorbot"/>
   </node>
 
-  <!-- RViz with shadow robot -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_driver)/config/basic.rviz" />
-
+  <!-- RViz with shadow robot
+  <node name="scorbot_rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_driver)/config/basic.rviz" />
+  -->
 </launch>

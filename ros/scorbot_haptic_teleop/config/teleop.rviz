@@ -3,8 +3,9 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
-      Splitter Ratio: 0.5
+      Expanded:
+        - /RobotModel1
+      Splitter Ratio: 0.566667
     Tree Height: 530
   - Class: rviz/Selection
     Name: Selection
@@ -92,6 +93,66 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
+    - Class: rviz/TF
+      Enabled: false
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        {}
+      Update Interval: 0
+      Value: false
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        body:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        flange:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        forearm:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        tool:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        upper_arm:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Name: RobotModel
+      Robot Description: robot_description
+      TF Prefix: scorbot
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -128,10 +189,10 @@ Visualization Manager:
         Z: 0.0361837
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.570398
+      Pitch: 0.604797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.355398
+      Yaw: 0.605401
     Saved: ~
 Window Geometry:
   Displays:
@@ -149,5 +210,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1200
-  X: 609
-  Y: 128
+  X: 579
+  Y: 98
