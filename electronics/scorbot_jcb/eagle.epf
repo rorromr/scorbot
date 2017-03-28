@@ -371,7 +371,7 @@ UsedLibrary="/home/rodrigo/eagle/lbr/uchile/uchile_robotics_eagle_lib.lbr"
 
 [Win_1]
 Type="Control Panel"
-Loc="213 193 1537 698"
+Loc="203 183 1527 688"
 State=2
 Number=0
 
