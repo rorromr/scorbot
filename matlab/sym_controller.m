@@ -9,7 +9,8 @@ w = sym('w'); % w = z^-1
 z = sym('z');
 
 %scontroller = kp + kd*s/(s*tau+1); % PD
-scontroller = kp+ki*1/s; % I
+scontroller = kp + ki*1/s + kd*s/(s*tau+1); % PID
+scontroller = ki*1/s+kp;
 zcontroller = subs(scontroller, s, (2/Ts)*(1-w)/(1+w));
 
 [znum, zden] = numden(zcontroller);
@@ -25,11 +26,11 @@ b=ccode(fliplr(sym(znum_coeff)))
 a=ccode(fliplr(sym(zden_coeff)))
 
 %% Eval
-vkp = 1;
+vkp = 1000;
 vki = 0.5;
-vkd = 0.8;
+vkd = 1.8;
 vtau = 0.1;
-vTs = 0.1;
+vTs = 0.01;
 valpha = 2/vTs;
 values = [vkp, vki, vkd, vtau, vTs, valpha];
 svars = [kp, ki, kd, tau, Ts, alpha];
@@ -37,7 +38,7 @@ svars = [kp, ki, kd, tau, Ts, alpha];
 znum_values = double(subs(znum_coeff,svars,values));
 zden_values = double(subs(zden_coeff,svars,values));
 % Flip coeffs for z^-1
-zcontroller_tf1 = tf(fliprl(znum_values), fliprl(zden_values), vTs, 'Variable', 'z^-1');
+zcontroller_tf1 = tf(fliplr(znum_values), fliplr(zden_values), vTs, 'Variable', 'z^-1');
 
 %% Verify
 [snum, sden] = numden(scontroller);
