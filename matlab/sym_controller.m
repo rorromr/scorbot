@@ -8,9 +8,8 @@ Ts = sym('Ts');
 w = sym('w'); % w = z^-1
 z = sym('z');
 
-%scontroller = kp + kd*s/(s*tau+1); % PD
 scontroller = kp + ki*1/s + kd*s/(s*tau+1); % PID
-scontroller = ki*1/s+kp;
+scontroller = kp + kd*s/(s*tau+1); % PD
 zcontroller = subs(scontroller, s, (2/Ts)*(1-w)/(1+w));
 
 [znum, zden] = numden(zcontroller);
