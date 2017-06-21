@@ -9,6 +9,7 @@ namespace scorbot_driver
       /* Fill motor names */
       _motor_names.clear();
       _motor_names.push_back("base");
+      _motor_names.push_back("shoulder");
     }
 
     ScorbotHardwareInterface::~ScorbotHardwareInterface()

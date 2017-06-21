@@ -73,7 +73,7 @@ namespace scorbot_driver
             ROS_WARN("Number of drivers is less than the number of slaves.");
           }
           for (std::size_t driver_idx = 0, slave_idx = 1;
-               driver_idx < driver_size, slave_idx <= ec_slavecount;
+               driver_idx < driver_size && slave_idx <= ec_slavecount;
                ++driver_idx, ++slave_idx)
           {
             _drivers[driver_idx]->configure(&ec_slave[slave_idx], slave_idx);
