@@ -10,7 +10,10 @@ z = sym('z');
 
 scontroller = kp + ki*1/s + kd*s/(s*tau+1); % PID
 scontroller = kp + kd*s/(s*tau+1); % PD
+scontroller = ki*1/s; % I
 zcontroller = subs(scontroller, s, (2/Ts)*(1-w)/(1+w));
+% Tustin (2/Ts)*(1-w)/(1+w)
+% Euler backward (1-w)/Ts
 
 [znum, zden] = numden(zcontroller);
 znum_coeff = fliplr(eval(feval(symengine,'coeff',znum,w,'All')));
