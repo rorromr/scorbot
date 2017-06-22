@@ -2,10 +2,12 @@
 
     <!-- PHANToM Omni teleop -->
     <node pkg="scorbot_haptic_teleop" type="haptic_teleop" name="teleop_omni" output="screen">
-        <remap from="haptic_joint_states" to="/omni/joint_states"/>
-        <remap from="shadow_joint_states" to="/scorbot_shadow/joint_states"/>
-        <remap from="haptic_button" to="/omni/button"/>
 
+        <remap from="shadow_joint_states" to="/scorbot_shadow/joint_states"/>
+        <remap from="haptic_joint_states" to="/omni/joint_states"/>
+        <remap from="haptic_button" to="/omni/button"/>
+        <remap from="haptic_force" to="/omni/force_feedback"/>
+        <remap from="joint_states" to="/scorbot/joint_states"/>
     </node>
 
     <!-- Shadow robot -->
