@@ -14,6 +14,7 @@
     --namespace /scorbot
     /scorbot/joint_state_controller
     /scorbot/base_controller
+    /scorbot/shoulder_controller
     " />
 
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
@@ -29,7 +30,7 @@
     <param name="tf_prefix " value="scorbot"/>
   </node>
 
-  <!-- RViz with shadow robot
+  <!-- RViz with robot -->
   <node name="scorbot_rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_driver)/config/basic.rviz" />
-  -->
+  
 </launch>
