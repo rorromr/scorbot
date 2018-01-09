@@ -71,6 +71,8 @@ namespace scorbot
             // Joint mapping functions
             joint_map_["base"] = boost::make_shared<LinearJointMapping>(1.0, 0.0);
             joint_map_["shoulder"] = boost::make_shared<LinearJointMapping>(-1.0, 0.3);
+            joint_map_["elbow"] = boost::make_shared<LinearJointMapping>(-1.0, 1.5);
+
 
         };
 
@@ -106,6 +108,15 @@ namespace scorbot
             {
                 scorbot_shadow_js_.position[1] = jm->second->map(haptic_joint_state->position[1]);
                 ROS_DEBUG_STREAM_THROTTLE(0.1, scorbot_shadow_js_.position[1]);
+            }
+
+            // Elbow
+            // Estimate mapping joint targets
+            jm = joint_map_.find("elbow");
+            if (jm != joint_map_.end())
+            {
+                scorbot_shadow_js_.position[2] = jm->second->map(haptic_joint_state->position[2]);
+                ROS_DEBUG_STREAM_THROTTLE(0.1, scorbot_shadow_js_.position[2]);
             }
 
             // Publish shadow robot joint state

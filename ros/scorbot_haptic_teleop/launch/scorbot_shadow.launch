@@ -27,6 +27,6 @@
     <node name="base_shadow_tf" pkg="tf" type="static_transform_publisher"
           args="0 0 0 0 0 0 /scorbot/base /scorbot_shadow/base 60"/>
     <node name="base_omni_tf" pkg="tf" type="static_transform_publisher"
-          args="0 0 0 0 0 0 /scorbot/base /omni/base 60"/>
+          args="0 0.8 0 -1.57 0 0 /scorbot_shadow/base /omni/base 60"/>
 
 </launch>
