@@ -30,7 +30,7 @@ cd build
 cmake ..
 make
 make install
-echo "export SOEM_PATH=\""$(dirname $(pwd))"/install/\"" >> ~/.bashrc
+echo "export SOEM_PATH=\""$(dirname $(pwd))"/install\"" >> ~/.bashrc
 ```
 
 Run
