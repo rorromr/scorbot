@@ -9,7 +9,7 @@ namespace scorbot_driver
       /* Fill motor names */
       _motor_names.clear();
       _motor_names.push_back("base");
-      _motor_names.push_back("shoulder");
+      //_motor_names.push_back("shoulder");
     }
 
     ScorbotHardwareInterface::~ScorbotHardwareInterface()
@@ -21,8 +21,8 @@ namespace scorbot_driver
     {
       for(std::size_t i = 0; i < _motors.size(); ++i)
       {
-        _motors[i]->setPosition((int16_t) (RAD2ENC*_joint_commands[i]));
-        _joint_angles[i] = ENC2RAD*_motors[i]->getPosition();
+        _motors[i]->setPosition(RAD2ENC*_joint_commands[i]);
+        _joint_angles[i] = _motors[i]->getPosition();
       }
       _master.update();
     }
