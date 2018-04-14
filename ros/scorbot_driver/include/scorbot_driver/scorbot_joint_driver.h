@@ -51,12 +51,17 @@ namespace scorbot_driver
         void setPosition(float target)
         {
           /* TODO Apply limits */
-          _set_point.testFloat = target;
+          _set_point.currentRef = (int16_t) target;
         }
 
         int16_t getPosition()
         {
           return _joint_data.encPosition;
+        }
+
+        int16_t getCurrent()
+        {
+          return _joint_data.current;
         }
 
         void update()

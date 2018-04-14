@@ -21,8 +21,9 @@ namespace scorbot_driver
     {
       for(std::size_t i = 0; i < _motors.size(); ++i)
       {
-        _motors[i]->setPosition(RAD2ENC*_joint_commands[i]);
+        _motors[i]->setPosition(_joint_commands[i]);
         _joint_angles[i] = _motors[i]->getPosition();
+        _joint_efforts[i] = _motors[i]->getCurrent();
       }
       _master.update();
     }
@@ -65,7 +66,7 @@ namespace scorbot_driver
 
         /* Hold current position */
         int16_t current_pos = _motors[i]->getPosition();
-        _motors[i]->setPosition(current_pos);
+        _motors[i]->setPosition(0);//cHANGE!
       }
       // Init EtherCAT master
       _master.configure();
