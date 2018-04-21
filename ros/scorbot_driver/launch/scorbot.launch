@@ -14,6 +14,9 @@
     --namespace /scorbot
     /scorbot/joint_state_controller
     /scorbot/base_controller
+    /scorbot/shoulder_controller
+    /scorbot/elbow_controller
+    /scorbot/pitch_controller
     " />
 
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">

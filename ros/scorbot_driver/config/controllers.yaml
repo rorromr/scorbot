@@ -7,7 +7,17 @@ scorbot:
     type: position_controllers/JointPositionController
     joint: base
 
+  shoulder_controller:
+    type: position_controllers/JointPositionController
+    joint: shoulder
 
+  elbow_controller:
+    type: position_controllers/JointPositionController
+    joint: elbow
+
+  pitch_controller:
+    type: position_controllers/JointPositionController
+    joint: pitch
 
   scorbot_control_hw:
     loop_frequency: 1000
