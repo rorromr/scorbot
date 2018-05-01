@@ -19,6 +19,14 @@ scorbot:
     type: position_controllers/JointPositionController
     joint: pitch
 
+  roll_controller:
+    type: position_controllers/JointPositionController
+    joint: roll
+
+  gripper_controller:
+    type: position_controllers/JointPositionController
+    joint: gripper
+
   scorbot_control_hw:
     loop_frequency: 1000
     cycle_time_error_threshold: 0.002

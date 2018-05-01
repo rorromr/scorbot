@@ -65,15 +65,19 @@ namespace scorbot
             // Robot command publisher
             scorbot_base_cmd_pub_ = nh_.advertise<std_msgs::Float64>("/scorbot/base_controller/command", 10);
             scorbot_shoulder_cmd_pub_ = nh_.advertise<std_msgs::Float64>("/scorbot/shoulder_controller/command", 10);
+            scorbot_elbow_cmd_pub_ = nh_.advertise<std_msgs::Float64>("/scorbot/elbow_controller/command", 10);
+            scorbot_pitch_cmd_pub_ = nh_.advertise<std_msgs::Float64>("/scorbot/pitch_controller/command", 10);
+            scorbot_roll_cmd_pub_ = nh_.advertise<std_msgs::Float64>("/scorbot/roll_controller/command", 10);
+            
             cmd_.data = 0.0;
 
 
             // Joint mapping functions
             joint_map_["base"] = boost::make_shared<LinearJointMapping>(1.0, 0.0);
             joint_map_["shoulder"] = boost::make_shared<LinearJointMapping>(-1.0, 0.3);
-            joint_map_["elbow"] = boost::make_shared<LinearJointMapping>(-1.0, 1.5);
-
-
+            joint_map_["elbow"] = boost::make_shared<LinearJointMapping>(1.0, -1.0);
+            joint_map_["pitch"] = boost::make_shared<LinearJointMapping>(0.5, -1.0);
+            joint_map_["roll"] = boost::make_shared<LinearJointMapping>(0.5, -3.14);
         };
 
         void hapticButtonStateCallback(const omni_msgs::OmniButtonEvent &haptic_button)
@@ -84,8 +88,8 @@ namespace scorbot
         void robotJointStateCallback(const sensor_msgs::JointStateConstPtr &robot_joint_state)
         {
             // Estimate force
-            force_cmd_.force.x = 5.0*(robot_joint_state->position[0] - scorbot_shadow_js_.position[0]);
-            force_cmd_.force.y = -5.0*(robot_joint_state->position[1] - scorbot_shadow_js_.position[1]);
+            force_cmd_.force.x = 10.0*(robot_joint_state->position[0] - scorbot_shadow_js_.position[0]);
+            //force_cmd_.force.y = -5.0*(robot_joint_state->position[1] - scorbot_shadow_js_.position[1]);
             haptic_force_pub_.publish(force_cmd_);
         }
 
@@ -119,6 +123,26 @@ namespace scorbot
                 ROS_DEBUG_STREAM_THROTTLE(0.1, scorbot_shadow_js_.position[2]);
             }
 
+            // Pitch
+            // Estimate mapping joint targets
+            jm = joint_map_.find("pitch");
+            if (jm != joint_map_.end())
+            {
+                // Use joint 4 from Phantom Omni
+                scorbot_shadow_js_.position[3] = jm->second->map(haptic_joint_state->position[4]);
+                ROS_DEBUG_STREAM_THROTTLE(0.1, scorbot_shadow_js_.position[3]);
+            }
+
+            // Pitch
+            // Estimate mapping joint targets
+            jm = joint_map_.find("roll");
+            if (jm != joint_map_.end())
+            {
+                // Use joint 4 from Phantom Omni
+                scorbot_shadow_js_.position[4] = jm->second->map(haptic_joint_state->position[3]);
+                ROS_DEBUG_STREAM_THROTTLE(0.1, scorbot_shadow_js_.position[4]);
+            }
+
             // Publish shadow robot joint state
             scorbot_shadow_js_.header.stamp = ros::Time::now();
             scorbot_shadow_pub_.publish(scorbot_shadow_js_);
@@ -135,6 +159,24 @@ namespace scorbot
             {
                 scorbot_shoulder_cmd_pub_.publish(cmd_);
             }
+
+            cmd_.data = scorbot_shadow_js_.position[2];
+            if (publish_cmd_)
+            {
+                scorbot_elbow_cmd_pub_.publish(cmd_);
+            }
+
+            cmd_.data = scorbot_shadow_js_.position[3];
+            if (publish_cmd_)
+            {
+                scorbot_pitch_cmd_pub_.publish(cmd_);
+            }
+
+            cmd_.data = scorbot_shadow_js_.position[4];
+            if (publish_cmd_)
+            {
+                scorbot_roll_cmd_pub_.publish(cmd_);
+            }
         }
 
 
@@ -149,6 +191,9 @@ namespace scorbot
         ros::Publisher scorbot_shadow_pub_;
         ros::Publisher scorbot_base_cmd_pub_;
         ros::Publisher scorbot_shoulder_cmd_pub_;
+        ros::Publisher scorbot_elbow_cmd_pub_;
+        ros::Publisher scorbot_pitch_cmd_pub_;
+        ros::Publisher scorbot_roll_cmd_pub_;
         sensor_msgs::JointState scorbot_shadow_js_;
         bool publish_cmd_;
         std_msgs::Float64 cmd_;

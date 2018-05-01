@@ -12,6 +12,8 @@ namespace scorbot_driver
       _motor_names.push_back("shoulder");
       _motor_names.push_back("elbow");
       _motor_names.push_back("pitch");
+      _motor_names.push_back("roll");
+      _motor_names.push_back("gripper");
     }
 
     ScorbotHardwareInterface::~ScorbotHardwareInterface()

@@ -2,6 +2,9 @@
 
 <launch>
 
+  <!-- Use RViz and Joint state slides -->
+  <arg name="use_gui" default="false"/>
+
   <!-- Parameters for the hardware interface and controllers -->
   <rosparam file="$(find scorbot_driver)/config/controllers.yaml"/>
 
@@ -17,10 +20,12 @@
     /scorbot/shoulder_controller
     /scorbot/elbow_controller
     /scorbot/pitch_controller
+    /scorbot/roll_controller
+    /scorbot/gripper_controller
     " />
 
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <param name="use_gui" value="true" />
+    <param name="use_gui" value="$(arg use_gui)" />
     <param name="rate" value="100" />
     <rosparam param="source_list">['/scorbot/joint_states']</rosparam>
   </node>
@@ -33,6 +38,6 @@
   </node>
 
   <!-- RViz with robot -->
-  <node name="scorbot_rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_driver)/config/basic.rviz" />
+  <node if="$(arg use_gui)" name="scorbot_rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_driver)/config/basic.rviz" />
   
 </launch>
