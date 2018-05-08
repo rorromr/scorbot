@@ -37,6 +37,8 @@ namespace scorbot_driver
       // ROS hardware interface instances
       hardware_interface::JointStateInterface _jnt_state_interface;
       hardware_interface::PositionJointInterface _jnt_pos_interface;
+      // For the gripper effort interface it's used
+      hardware_interface::EffortJointInterface _jnt_eff_interface;
 
       // Memory space shared with the controller
       // It reads here the latest robot's state and put here the next desired values
@@ -46,10 +48,16 @@ namespace scorbot_driver
       std::vector<double> _joint_angles; // actual joint angle
       std::vector<double> _joint_velocities; // actual joint velocity
       std::vector<double> _joint_efforts; // compulsory but not used
+      /* Gripper */
+      double _gripper_command;
+      double _gripper_angle;
+      double _gripper_velocity;
+      double _gripper_effort;
 
       // EtherCAT connection
       EthercatMaster _master;
       std::vector<ScorbotJointDriverPtr> _motors;
+      ScorbotJointDriverPtr _gripper;
       std::vector<std::string> _motor_names;
   };
 }

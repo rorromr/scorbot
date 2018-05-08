@@ -7,7 +7,25 @@ scorbot:
     type: position_controllers/JointPositionController
     joint: base
 
+  shoulder_controller:
+    type: position_controllers/JointPositionController
+    joint: shoulder
 
+  elbow_controller:
+    type: position_controllers/JointPositionController
+    joint: elbow
+
+  pitch_controller:
+    type: position_controllers/JointPositionController
+    joint: pitch
+
+  roll_controller:
+    type: position_controllers/JointPositionController
+    joint: roll
+
+  gripper_controller:
+    type: effort_controllers/JointEffortController
+    joint: gripper
 
   scorbot_control_hw:
     loop_frequency: 1000
