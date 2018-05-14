@@ -13,6 +13,8 @@ namespace scorbot_driver
       _motor_names.push_back("elbow");
       _motor_names.push_back("pitch");
       _motor_names.push_back("roll");
+      // Gripper limit at 0.5 A
+      _gripper_current_limit_.initRT(0.5);
     }
 
     ScorbotHardwareInterface::~ScorbotHardwareInterface()
@@ -101,6 +103,9 @@ namespace scorbot_driver
       registerInterface(&_jnt_state_interface);
       registerInterface(&_jnt_pos_interface);
       registerInterface(&_jnt_eff_interface);
+
+      // Gripper current limitation subscriber
+      _gripper_current_limit_sub_ = ros::NodeHandle().subscribe("gripper_current_limitation", 1, &ScorbotHardwareInterface::_gripper_current_cb, this);
     }
 
 
