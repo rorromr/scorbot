@@ -46,7 +46,7 @@ namespace scorbot_driver
           _set_point.controlRegA = 0U;
           _set_point.controlRegB = 0U;
           _set_point.currentRef = 0;
-          _set_point.currentLim = 500;
+          _set_point.currentLim = std::floor(MotorConfig::__getDefault__().current_limit*CURRENT_FACTOR);
           _set_point.pidCurrentKp = 0U;
           _set_point.pidCurrentKi = 0U;
           _set_point.pidCurrentKd = 0U;
@@ -111,7 +111,7 @@ namespace scorbot_driver
 
           // Update values using RT buffer
           ROS_DEBUG_STREAM_NAMED(_joint_name,"Setting current_limit at " << config.current_limit);
-          _current_limit_.writeFromNonRT(std::floor(config.current_limit));
+          _current_limit_.writeFromNonRT(std::floor(config.current_limit*CURRENT_FACTOR));
 
 
           // Set values back using a shared mutex with dynamic reconfig
@@ -121,6 +121,7 @@ namespace scorbot_driver
         }
 
     private:
+        static const double CURRENT_FACTOR = 160.0;
         std::string _joint_name;
         setpoint_t _set_point;
         joint_data_t _joint_data;
