@@ -9,7 +9,7 @@ Nr = 96;
 speed_rad = diff(pos)/Ts;
 speed_rps = speed_rad/(2*pi);
 speed_rpm = speed_rps*60;
-plot(time(2:end),speed_rpm,'r');
+plot(time(2:end),speed_rad,'r');
 legend('Velocidad angular');
 xlabel('Tiempo (s)');
 ylabel('Velocidad (rpm)');
