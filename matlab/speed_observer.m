@@ -1,6 +1,6 @@
-Fs=60; % 100 kHz
-Ts=1/Fs;
-B=1*2*pi; % Bandwidth
+Fs=60; % Sample freq Hz
+Ts=1/Fs; % Sample time s
+B=1*2*pi; % Bandwidth 1Hz
 kp=2*B;
 ki=kp^2/4;
 % Speed observer TF
@@ -21,7 +21,10 @@ hold on;
 RAD2RPM=30/(pi);
 ratio = 3.0*160.0*RAD2RPM;
 plot(time_60hz(2:end),diff(pos_60hz)/(time_60hz(2)-time_60hz(1))*ratio,'r');
+xlabel('Tiempo (s)');
+ylabel('Velocidad del motor (RPM)');
 plot(speed_est_t, speed_est*ratio, 'b');
+legend('Diferenciación', 'Estimación')
 %% Max speed
 RAD2RPM=30/(pi);
 joint_speed = (0.558+0.101)/(7.68-6.17) % rad/s at joint
