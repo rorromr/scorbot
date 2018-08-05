@@ -9,12 +9,16 @@ ozin2nm=0.11298482933;
 % Angular speed conversion factor rpm to rad/s
 rpm2rads=0.104719755;
 % Using SI units
-km = km*ozin2nm;
-peak_torque = peak_torque*ozin2nm;
-no_load_speed = no_load_speed*rpm2rads;
-friction_torque = friction_torque*ozin2nm;
-% Estimation of other params
+
 kv = v/no_load_speed;
 kt = kv;
 peak_torque = stall_current*kt;
-ra = v*v/(no_load_speed*peak_torque);
+
+km = km*ozin2nm;
+no_load_speed = no_load_speed*rpm2rads;
+friction_torque = friction_torque*ozin2nm;
+% Estimation of other params
+
+peak_torque = stall_current*kt;
+ra = v*v/(no_load_speed*peak_torque)
+peak_torque = peak_torque*ozin2nm;
