@@ -1,9 +1,22 @@
-%% Motor params GM9434
-L=2.51e-3;
-R=2.96;
-motor_num = 1;
-motor_den = [L, R];
-motor_sys = tf(motor_num,motor_den);
+%% Motor parameters
+% GM9434 all in SI units
+gm9434.name = 'GM9434';
+gm9434.kt = 0.0365; % N*m/A
+gm9434.ke = 0.0365; % V/(rad/s)
+gm9434.Ra = 2.96; % Ohm
+gm9434.La = 0.00251; % H
+gm9434.Jm = 4.17e-6; % Kg*m^2
+% GM9413 all in SI units
+gm9413.name = 'GM9413';
+gm9413.kt = 0.0395; % N*m/A
+gm9413.ke = 0.0395; % V/(rad/s)
+gm9413.Ra = 8.33; % Ohm
+gm9413.La = 0.00617; % H
+gm9413.Jm = 2.80e-6; % Kg*m^2
+
+%% Motor electrical dynamics
+motor = gm9434;
+motor_sys = tf([1],[motor.La, motor.Ra]);
 % Current loop running at 10kHz (sampling at 10Khz)
 Fs = 10e3;
 Ws = 2*pi*Fs;
@@ -11,65 +24,56 @@ Ts = 1/Fs;
 % Max bandwidth should be 1/10 of Ws
 max_bandwidth = 0.1*Ws;
 disp(['Max bandwidth: ',num2str(max_bandwidth),'rad/s ,',num2str(max_bandwidth/(2*pi)), ' Hz'])
-rltool(motor_sys)
+%rltool(motor_sys)
 
 fb = bandwidth(motor_sys);
 fb_hz = fb/(2*pi);
-%bode(motor_sys);
 fn = damp(motor_sys)/(2*pi)
-disp(['GM9434 bandwidth: ', num2str(fb_hz), ' Hz']);
+disp([motor.name,' bandwidth: ', num2str(fb_hz), ' Hz']);
 
-%% Motor params GM9413
-L=6.17e-3;
-R=8.33;
-motor_num = 1;
-motor_den = [L, R];
-motor_sys = tf(motor_num,motor_den);
-fb = bandwidth(motor_sys);
-fb_hz = fb/(2*pi);
-%bode(motor_sys);
-disp(['GM9413 bandwidth: ', num2str(fb_hz), ' Hz']);
-
-%% Using sym
-
+%% Current Controller
 % Sym variables
 kp = sym('kp');
 ki = sym('ki');
 s = sym('s');
-La = sym('L');
-Ra = sym('R');
+La = sym('La');
+Ra = sym('Ra');
 % PI Controller
 Cs = kp+ki*1/s; % PI
 % Plant
 Gs = 1/(La*s+Ra);
 % Close loop TF
-Hs = (sctrl*splant)/(1+sctrl*splant);
+Hs = (Cs*Gs)/(1+Cs*Gs);
 % Get num and den of close loop TF
 [Hs_num, Hs_den] = numden(Hs)
-Hs_num_coeff = fliplr(eval(feval(symengine,'coeff',snum,s,'All')))
-Hs_den_coeff = fliplr(eval(feval(symengine,'coeff',sden,s,'All')))
-
-% Motor params GM9434
-vLa = 2.51e-3;
-vRa = 2.96;
-% From aalto course
-Fs = 10e3;
-Ws = 2*pi*Fs;
-Ts = 1/Fs;
+Hs_num_coeff = fliplr(eval(feval(symengine,'coeff',Hs_num,s,'All')))
+Hs_den_coeff = fliplr(eval(feval(symengine,'coeff',Hs_den,s,'All')))
+% Value to get a 1st order closed loop system with alpha bandwidth
 alpha = 0.1*Ws;
-vkp = alpha*vL
-vki = alpha*vR
-vkd = 0
-values = [vkp, vki, vkd, vL, vR];
-svars = [kp, ki, kd, La, Ra];
-
+current_ctrl.kp = alpha*motor.La;
+current_ctrl.ki = alpha*motor.Ra;
+current_ctrl.Fs = 10000; 
+current_ctrl.Ts = 1/Fs;
+current_ctrl.z_num = [current_ctrl.kp+current_ctrl.Ts*current_ctrl.ki*(1.0/2.0), ...
+-current_ctrl.kp+current_ctrl.Ts*current_ctrl.ki*(1.0/2.0)];
+current_ctrl.z_den = [1.0 -1.0];
+% Evaluate values
+values = [current_ctrl.kp, current_ctrl.ki, motor.La, motor.Ra];
+svars = [kp, ki, La, Ra];
+% Num and den of closed loop tranfer function 
 num_values = double(subs(Hs_num_coeff,svars,values))
 den_values = double(subs(Hs_den_coeff,svars,values))
-
-motor_sys = tf(num_values,den_values);
+% Closed loop transfer function parameters
+hs_sys = tf(num_values,den_values);
 wb = bandwidth(motor_sys);
 fb  = wb/(2*pi);
 wn = damp(motor_sys)
 fn = wn/(2*pi);
-bode(motor_sys);
-disp(['GM9413 bandwidth: ', num2str(fb), ' Hz']);
+bode(hs_sys);
+disp([motor.name,' controller bandwidth: ', num2str(fb), ' Hz']);
+%% Mechanical part
+encoder=(2*pi)/96;
+vest.B = wb/20;
+vest.kp = 2*vest.B;
+vest.ki = vest.kp*vest.kp/4;
+

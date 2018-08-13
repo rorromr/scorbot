@@ -8,9 +8,9 @@ Ts = sym('Ts');
 w = sym('w'); % w = z^-1
 z = sym('z');
 
-scontroller = (s+s^2*kp/ki)/(1+s*kp/ki+s^2*1/ki); % PID
+%scontroller = (s+s^2*kp/ki)/(1+s*kp/ki+s^2*1/ki); % PID
 %scontroller = kp + kd*s/(s*tau+1); % PD
-%scontroller = kp+ki*1/s; % I
+scontroller = kp+ki*1/s; % I
 zcontroller = subs(scontroller, s, (2/Ts)*(1-w)/(1+w));
 % Tustin (2/Ts)*(1-w)/(1+w)
 % Euler backward (1-w)/Ts
