@@ -73,7 +73,7 @@ bode(hs_sys);
 disp([motor.name,' controller bandwidth: ', num2str(fb), ' Hz']);
 %% Mechanical part
 encoder=(2*pi)/96;
-vest.B = wb/20;
+vest.B = wb/100;
 vest.kp = 2*vest.B;
 vest.ki = vest.kp*vest.kp/4;
 
