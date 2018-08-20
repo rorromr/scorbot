@@ -6,6 +6,7 @@ gm9434.ke = 0.0365; % V/(rad/s)
 gm9434.Ra = 2.96; % Ohm
 gm9434.La = 0.00251; % H
 gm9434.Jm = 4.17e-6; % Kg*m^2
+gm9434.Bm = 2.6e-6; % N*m/(rad*s)
 % GM9413 all in SI units
 gm9413.name = 'GM9413';
 gm9413.kt = 0.0395; % N*m/A
@@ -13,6 +14,7 @@ gm9413.ke = 0.0395; % V/(rad/s)
 gm9413.Ra = 8.33; % Ohm
 gm9413.La = 0.00617; % H
 gm9413.Jm = 2.80e-6; % Kg*m^2
+gm9413.Bm = 7.6e-7; % N*m/(rad*s)
 
 %% Motor electrical dynamics
 motor = gm9434;
@@ -73,7 +75,7 @@ bode(hs_sys);
 disp([motor.name,' controller bandwidth: ', num2str(fb), ' Hz']);
 %% Mechanical part
 encoder=(2*pi)/96;
-vest.B = wb/100;
+vest.B = wb/200;
 vest.kp = 2*vest.B;
 vest.ki = vest.kp*vest.kp/4;
 
