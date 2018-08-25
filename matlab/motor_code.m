@@ -23,11 +23,9 @@ motor_sys = tf([1],[motor.La, motor.Ra]);
 Fs = 10e3;
 Ws = 2*pi*Fs;
 Ts = 1/Fs;
-% Max bandwidth should be 1/10 of Ws
+% Max bandwidth of controller should be 1/10 of Ws
 max_bandwidth = 0.1*Ws;
 disp(['Max bandwidth: ',num2str(max_bandwidth),'rad/s ,',num2str(max_bandwidth/(2*pi)), ' Hz'])
-%rltool(motor_sys)
-
 fb = bandwidth(motor_sys);
 fb_hz = fb/(2*pi);
 fn = damp(motor_sys)/(2*pi)
