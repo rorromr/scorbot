@@ -52,7 +52,7 @@ Hs_den_coeff = fliplr(eval(feval(symengine,'coeff',Hs_den,s,'All')))
 alpha = 0.1*Ws;
 current_ctrl.kp = alpha*motor.La;
 current_ctrl.ki = alpha*motor.Ra;
-current_ctrl.Fs = 10000; 
+current_ctrl.Fs = 10e3; % Current sampling at 10kHz
 current_ctrl.Ts = 1/Fs;
 current_ctrl.z_num = [current_ctrl.kp+current_ctrl.Ts*current_ctrl.ki*(1.0/2.0), ...
 -current_ctrl.kp+current_ctrl.Ts*current_ctrl.ki*(1.0/2.0)];
@@ -65,15 +65,13 @@ num_values = double(subs(Hs_num_coeff,svars,values))
 den_values = double(subs(Hs_den_coeff,svars,values))
 % Closed loop transfer function parameters
 hs_sys = tf(num_values,den_values);
-wb = bandwidth(motor_sys);
+wb = bandwidth(hs_sys);
 fb  = wb/(2*pi);
-wn = damp(motor_sys)
-fn = wn/(2*pi);
 bode(hs_sys);
 disp([motor.name,' controller bandwidth: ', num2str(fb), ' Hz']);
 %% Mechanical part
 encoder=(2*pi)/96;
-vest.B = wb/200;
+vest.B = wb/100;
 vest.kp = 2*vest.B;
 vest.ki = vest.kp*vest.kp/4;
 
