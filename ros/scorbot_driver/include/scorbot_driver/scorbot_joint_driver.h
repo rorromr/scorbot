@@ -13,6 +13,7 @@ namespace scorbot_driver
         uint16_t pidCurrentKp;
         uint16_t pidCurrentKi;
         uint16_t pidCurrentKd;
+	      float testFloat;
     } setpoint_t;
 
     typedef struct PACKED {
@@ -39,6 +40,7 @@ namespace scorbot_driver
           _set_point.pidCurrentKp = 0U;
           _set_point.pidCurrentKi = 0U;
           _set_point.pidCurrentKd = 0U;
+          _set_point.testFloat = 0.0f;
 
           _joint_data.encPosition = 0;
           _joint_data.encSpeed = 0;
@@ -46,15 +48,20 @@ namespace scorbot_driver
           _joint_data.limits = 0U;
         };
 
-        void setPosition(int16_t target)
+        void setPosition(float target)
         {
           /* TODO Apply limits */
-          _set_point.currentRef = target;
+          _set_point.currentRef = (int16_t) target;
         }
 
         int16_t getPosition()
         {
           return _joint_data.encPosition;
+        }
+
+        int16_t getCurrent()
+        {
+          return _joint_data.current;
         }
 
         void update()

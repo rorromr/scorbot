@@ -1,0 +1,27 @@
+<launch>
+  <group ns="shadow">
+      <arg
+        name="model" />
+      <arg
+        name="gui"
+        default="True" />
+      <param
+        name="robot_description"
+        command="$(find xacro)/xacro.py '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
+      <param
+        name="use_gui"
+        value="$(arg gui)" />
+      <node
+        name="joint_state_publisher"
+        pkg="joint_state_publisher"
+        type="joint_state_publisher">
+      </node>
+      <node
+        name="robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="state_publisher">
+        <param name="tf_prefix" value="shadow"/>
+      </node>
+      <node pkg="tf" type="static_transform_publisher" name="shadow_base_broadcaster" args="0 0 0 0 0 0 base shadow/base 100" />
+  </group>
+</launch>

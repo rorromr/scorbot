@@ -35,6 +35,7 @@ namespace scorbot_driver
         std::cout << "Not all slaves reached init state." << std::endl;
       }
       ec_close();
+      std::cout << "EtherCAT closed." << std::endl;
     }
 
     bool EthercatMaster::registerDriver(EthercatDriverPtr driver)

@@ -7,7 +7,7 @@
 
 FIND_PATH(SOEM_INCLUDE_DIR NAMES ethercatmain.h
   PATHS
-  $ENV{SOEM_PATH}/include/
+  $ENV{SOEM_PATH}/include/soem
   /usr/include/
   /usr/include/soem/src
   /usr/local/include/

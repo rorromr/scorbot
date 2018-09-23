@@ -245,7 +245,7 @@
     <child
       link="forearm" />
     <axis
-      xyz="0 1 0" />
+      xyz="0 -1 0" />
     <limit effort="30" velocity="1.0" lower="${elbow_lower_limit}" upper="${elbow_upper_limit}" />
   </joint>
   <link
@@ -299,7 +299,7 @@
     <child
       link="flange" />
     <axis
-      xyz="0 1 0" />
+      xyz="0 -1 0" />
     <limit effort="30" velocity="1.0" lower="${pitch_lower_limit}" upper="${pitch_upper_limit}" />
   </joint>
   <link name="tool" >
