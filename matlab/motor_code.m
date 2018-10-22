@@ -49,7 +49,7 @@ Hs = (Cs*Gs)/(1+Cs*Gs);
 Hs_num_coeff = fliplr(eval(feval(symengine,'coeff',Hs_num,s,'All')))
 Hs_den_coeff = fliplr(eval(feval(symengine,'coeff',Hs_den,s,'All')))
 % Value to get a 1st order closed loop system with alpha bandwidth
-alpha = 0.1*Ws;
+alpha = 0.1*Ws;%0.1*Ws
 current_ctrl.kp = alpha*motor.La;
 current_ctrl.ki = alpha*motor.Ra;
 current_ctrl.Fs = 10e3; % Current sampling at 10kHz
@@ -70,8 +70,49 @@ fb  = wb/(2*pi);
 bode(hs_sys);
 disp([motor.name,' controller bandwidth: ', num2str(fb), ' Hz']);
 %% Mechanical part
+% Speed observer
 encoder=(2*pi)/96;
-vest.B = wb/100;
+vest.B = wb/50;
+disp(['Speed observer bandwidth: ', num2str(vest.B/(2*pi)), ' Hz']);
 vest.kp = 2*vest.B;
 vest.ki = vest.kp*vest.kp/4;
+% Mechanical system
+joint.i = (180*3)/1; % Gear ratio
+joint.J_load = 5*(0.5^2); % equivalent joint inertia 5kg*(0.5m)^2
+joint.J = motor.Jm + joint.J_load/(joint.i^2) % Equivalent inertia motor side
 
+mechanical_sys = tf([1],[joint.J, 0])
+% Speed controller
+speed_ctrl.B = vest.B/10;
+disp(['Speed observer bandwidth: ', num2str(speed_ctrl.B/(2*pi)), ' Hz']);
+%rltool(mechanical_sys) % Controller for 15 rad/s, 0.707 damping ratio
+speed_ctrl.kp = 0.00017943;
+speed_ctrl.ki = speed_ctrl.kp*10.56;
+
+% Sym variables
+kp = sym('kp');
+ki = sym('ki');
+s = sym('s');
+J = sym('J');
+% PI Controller
+Cs = kp+ki*1/s; % PI
+% Plant
+Gs = 1/(J);
+% Close loop TF
+Hs = (Cs*Gs)/(1+Cs*Gs);
+% Get num and den of close loop TF
+[Hs_num, Hs_den] = numden(Hs)
+Hs_num_coeff = fliplr(eval(feval(symengine,'coeff',Hs_num,s,'All')))
+Hs_den_coeff = fliplr(eval(feval(symengine,'coeff',Hs_den,s,'All')))
+% Evaluate values
+values = [speed_ctrl.kp, speed_ctrl.ki, joint.J];
+svars = [kp, ki, J];
+% Num and den of closed loop tranfer function 
+num_values = double(subs(Hs_num_coeff,svars,values))
+den_values = double(subs(Hs_den_coeff,svars,values))
+% Closed loop transfer function parameters
+hs_sys = tf(num_values,den_values);
+wb = bandwidth(hs_sys)
+fb  = wb/(2*pi)
+bode(hs_sys)
+disp([motor.name,' controller bandwidth: ', num2str(fb), ' Hz']);
