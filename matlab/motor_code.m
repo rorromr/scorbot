@@ -7,6 +7,7 @@ gm9434.Ra = 2.96; % Ohm
 gm9434.La = 0.00251; % H
 gm9434.Jm = 4.17e-6; % Kg*m^2
 gm9434.Bm = 2.6e-6; % N*m/(rad*s)
+gm9434.max_speed = 600; % rad/s
 % GM9413 all in SI units
 gm9413.name = 'GM9413';
 gm9413.kt = 0.0395; % N*m/A
@@ -15,10 +16,11 @@ gm9413.Ra = 8.33; % Ohm
 gm9413.La = 0.00617; % H
 gm9413.Jm = 2.80e-6; % Kg*m^2
 gm9413.Bm = 7.6e-7; % N*m/(rad*s)
+gm9413.max_speed = 600; % rad/s
 
 %% Motor electrical dynamics
 motor = gm9434;
-motor_sys = tf([1],[motor.La, motor.Ra]);
+motor_sys = tf(1,[motor.La, motor.Ra]);
 % Current loop running at 10kHz (sampling at 10Khz)
 Fs = 10e3;
 Ws = 2*pi*Fs;
@@ -28,7 +30,7 @@ max_bandwidth = 0.1*Ws;
 disp(['Max bandwidth: ',num2str(max_bandwidth),'rad/s ,',num2str(max_bandwidth/(2*pi)), ' Hz'])
 fb = bandwidth(motor_sys);
 fb_hz = fb/(2*pi);
-fn = damp(motor_sys)/(2*pi)
+fn = damp(motor_sys)/(2*pi);
 disp([motor.name,' bandwidth: ', num2str(fb_hz), ' Hz']);
 
 %% Current Controller
@@ -118,16 +120,15 @@ bode(hs_sys)
 disp([motor.name,' speed controller bandwidth: ', num2str(fb), ' Hz']);
 %% Position controller
 tf_speed_ctrl = tf(num_values,den_values)
-tf_speed_plant = tf(num_values, conv(den_values,[1 0]))
+tf_speed_plant = tf(num_values, conv(den_values,[1 0])) % Add 1/s (speed to position plant)
 bode(tf_speed_plant)
-rltool(tf_speed_plant) % Controller for natural frequency 3.5 rad/s, 1 damping ratio
+%rltool(tf_speed_plant) % Controller for natural frequency 3.5 rad/s, 1 damping ratio
 %%
-position_ctrl.kp = 5.3;
+position_ctrl.kp = 2*5.3;
 tf_position_ctrl = tf([position_ctrl.kp],[1])
 tf_closed_loop = feedback(tf_speed_plant, tf_position_ctrl)
 bode(tf_closed_loop)
 %%
 wb = bandwidth(tf_closed_loop)
 fb  = wb/(2*pi)
-
 disp([motor.name,' position controller bandwidth: ', num2str(fb), ' Hz']);
