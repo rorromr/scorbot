@@ -118,13 +118,16 @@ bode(hs_sys)
 disp([motor.name,' speed controller bandwidth: ', num2str(fb), ' Hz']);
 %% Position controller
 tf_speed_ctrl = tf(num_values,den_values)
-%rltool(tf_speed_ctrl) % Controller for natural frequency 3.5 rad/s, 1 damping ratio
+tf_speed_plant = tf(num_values, conv(den_values,[1 0]))
+bode(tf_speed_plant)
+rltool(tf_speed_plant) % Controller for natural frequency 3.5 rad/s, 1 damping ratio
 %%
-position_ctrl.kp = 8;
-position_ctrl.ki = position_ctrl.kp*6;
-tf_position_ctrl = tf([position_ctrl.kp position_ctrl.ki],[1 0])
-tf_closed_loop = feedback(tf_speed_ctrl, tf_position_ctrl);
+position_ctrl.kp = 5.3;
+tf_position_ctrl = tf([position_ctrl.kp],[1])
+tf_closed_loop = feedback(tf_speed_plant, tf_position_ctrl)
+bode(tf_closed_loop)
+%%
 wb = bandwidth(tf_closed_loop)
 fb  = wb/(2*pi)
-bode(tf_closed_loop)
+
 disp([motor.name,' position controller bandwidth: ', num2str(fb), ' Hz']);
