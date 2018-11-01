@@ -22,13 +22,13 @@
   <xacro:gazebo_link link="left_finger" color="DarkGrey" />
 
   <!-- Transmissions -->
-  <xacro:joint_transmission joint="base"/>
-  <xacro:joint_transmission joint="shoulder"/>
-  <xacro:joint_transmission joint="elbow"/>
-  <xacro:joint_transmission joint="pitch"/>
+  <xacro:joint_pos_transmission joint="base"/>
+  <xacro:joint_pos_transmission joint="shoulder"/>
+  <xacro:joint_pos_transmission joint="elbow"/>
+  <xacro:joint_pos_transmission joint="pitch"/>
   <xacro:joint_pos_transmission joint="roll"/>
-  <xacro:joint_transmission joint="right_finger_tras"/>
-  <xacro:joint_transmission joint="left_finger_tras"/>
+  <xacro:joint_pos_transmission joint="right_finger_tras"/>
+  <xacro:joint_pos_transmission joint="left_finger_tras"/>
 
   <!-- Constants -->
   <xacro:property name="M_PI" value="3.14159265359" />
@@ -47,8 +47,8 @@
   <xacro:property name="pitch_upper_limit" value="${ 180.0/2*DEG2RAD}" />
   <xacro:property name="pitch_lower_limit" value="${-180.0/2*DEG2RAD}" />
 
-  <xacro:property name="roll_upper_limit" value="${  360.0/2*DEG2RAD}" />
-  <xacro:property name="roll_lower_limit" value="${- 360.0/2*DEG2RAD}" />
+  <xacro:property name="roll_upper_limit" value="${ 360.0/2*DEG2RAD}" />
+  <xacro:property name="roll_lower_limit" value="${-360.0/2*DEG2RAD}" />
 
   <xacro:property name="finger_upper_limit" value="${ 0.0165}" />
   <xacro:property name="finger_lower_limit" value="${-0.0165}" />
