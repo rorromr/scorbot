@@ -124,7 +124,7 @@ tf_speed_plant = tf(num_values, conv(den_values,[1 0])) % Add 1/s (speed to posi
 bode(tf_speed_plant)
 %rltool(tf_speed_plant) % Controller for natural frequency 3.5 rad/s, 1 damping ratio
 %%
-position_ctrl.kp = 2*5.3;
+position_ctrl.kp = 1.3;
 tf_position_ctrl = tf([position_ctrl.kp],[1])
 tf_closed_loop = feedback(tf_speed_plant, tf_position_ctrl)
 bode(tf_closed_loop)
