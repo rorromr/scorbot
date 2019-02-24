@@ -65,10 +65,10 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="${M_PI/2.0} 0 0" />
       <geometry>
         <mesh
-          filename="package://scorbot_description/meshes/base.STL" />
+          filename="package://scorbot_description/meshes/base.dae" />
       </geometry>
       <material
         name="">
@@ -82,7 +82,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://scorbot_description/meshes/base.STL" />
+          filename="package://scorbot_description/meshes/base.dae" />
       </geometry>
     </collision>
   </link>
@@ -105,10 +105,10 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="${-M_PI/2.0} 0 0" />
       <geometry>
         <mesh
-          filename="package://scorbot_description/meshes/body.STL" />
+          filename="package://scorbot_description/meshes/body.dae" />
       </geometry>
       <material
         name="">
