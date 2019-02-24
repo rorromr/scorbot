@@ -159,10 +159,10 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="${-M_PI/2.0} 0 0" />
       <geometry>
         <mesh
-          filename="package://scorbot_description/meshes/upper_arm.STL" />
+          filename="package://scorbot_description/meshes/upper_arm.dae" />
       </geometry>
       <material
         name="">
@@ -213,10 +213,10 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="${M_PI/2.0} 0 0" />
       <geometry>
         <mesh
-          filename="package://scorbot_description/meshes/forearm.STL" />
+          filename="package://scorbot_description/meshes/forearm.dae" />
       </geometry>
       <material
         name="">
@@ -267,10 +267,10 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="${-M_PI/2.0} 0 0" />
       <geometry>
         <mesh
-          filename="package://scorbot_description/meshes/flange.STL" />
+          filename="package://scorbot_description/meshes/flange.dae" />
       </geometry>
       <material
         name="">
