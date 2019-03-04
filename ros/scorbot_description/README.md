@@ -7,6 +7,7 @@ scorbot_description
 * Install guest tools
 * Configure shared folder
 * Change MAC address of the VM
+* Create a VM snapshot to recover the VM to this state in the future
 * [Download Collada Exporter](https://www.simlab-soft.com/3d-plugins/SolidWorks/Collada_exporter_for_SolidWorks-main.aspx#download)
 * Create a [disposable email account](https://getinboxes.com)
 * Install Collada exporter and request license file
