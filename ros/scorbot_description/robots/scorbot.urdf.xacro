@@ -79,7 +79,7 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="${M_PI/2.0} 0 0" />
       <geometry>
         <mesh
           filename="package://scorbot_description/meshes/base.dae" />
@@ -119,10 +119,10 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="${-M_PI/2.0} 0 0" />
       <geometry>
         <mesh
-          filename="package://scorbot_description/meshes/body.STL" />
+          filename="package://scorbot_description/meshes/body.dae" />
       </geometry>
     </collision>
   </link>
@@ -173,10 +173,10 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="${-M_PI/2.0} 0 0" />
       <geometry>
         <mesh
-          filename="package://scorbot_description/meshes/upper_arm.STL" />
+          filename="package://scorbot_description/meshes/upper_arm.dae" />
       </geometry>
     </collision>
   </link>
@@ -227,10 +227,10 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="${M_PI/2.0} 0 0" />
       <geometry>
         <mesh
-          filename="package://scorbot_description/meshes/forearm.STL" />
+          filename="package://scorbot_description/meshes/forearm.dae" />
       </geometry>
     </collision>
   </link>
@@ -281,10 +281,10 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="${-M_PI/2.0} 0 0" />
       <geometry>
         <mesh
-          filename="package://scorbot_description/meshes/flange.STL" />
+          filename="package://scorbot_description/meshes/flange.dae" />
       </geometry>
     </collision>
   </link>
@@ -292,7 +292,7 @@
     name="pitch"
     type="revolute">
     <origin
-      xyz="0.25 0.054 0"
+      xyz="0.25 0.058 0"
       rpy="0 0 0" />
     <parent
       link="forearm" />
@@ -343,7 +343,7 @@
     name="roll"
     type="revolute">
     <origin
-      xyz="0.054 -0.02 0"
+      xyz="0.054 -0.024 0"
       rpy="0 0 0" />
     <parent
       link="flange" />
