@@ -3,7 +3,8 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /Scorbot Model1
       Splitter Ratio: 0.5
     Tree Height: 559
   - Class: rviz/Selection
@@ -76,17 +77,17 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        gripper_base:
+        gripper_base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        gripper_left_finger:
+        gripper_finger_left:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        gripper_right_finger:
+        gripper_finger_right:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -140,7 +141,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.91918
+      Distance: 1.85397
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -152,10 +153,10 @@ Visualization Manager:
         Z: 0.181998
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.460398
+      Pitch: 0.305398
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.855402
+      Yaw: 0.975401
     Saved: ~
 Window Geometry:
   Displays:
@@ -173,5 +174,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1200
-  X: 157
-  Y: 64
+  X: 137
+  Y: 48

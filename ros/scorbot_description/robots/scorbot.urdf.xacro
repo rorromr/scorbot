@@ -44,7 +44,9 @@
 
   <xacro:property name="roll_upper_limit" value="${ 360.0/2*DEG2RAD}" />
   <xacro:property name="roll_lower_limit" value="${-360.0/2*DEG2RAD}" />
-
+  <!-- Gripper joint limits -->
+  <xacro:property name="gripper_upper_limit" value="0.016" />
+  <xacro:property name="gripper_lower_limit" value="-0.018" />
 
   <link
     name="base">
@@ -302,43 +304,7 @@
       xyz="0 -1 0" />
     <limit effort="30" velocity="1.0" lower="${pitch_lower_limit}" upper="${pitch_upper_limit}" />
   </joint>
-  <link name="tool" >
-    <inertial>
-      <origin
-        xyz="0.0069957 -0.02 5.5511E-17"
-        rpy="0 0 0" />
-      <mass
-        value="0.24441" />
-      <inertia
-        ixx="0.00014819"
-        ixy="1.6491E-20"
-        ixz="-1.653E-19"
-        iyy="0.00028003"
-        iyz="5.3591E-21"
-        izz="0.00021086" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0.05 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <box size="0.05 0.05 0.05"/>
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.10196 0.10196 0.10196 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0.05 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <box size="0.05 0.05 0.05"/>
-      </geometry>
-    </collision>
-  </link>
+
   <joint
     name="roll"
     type="revolute">
@@ -348,9 +314,158 @@
     <parent
       link="flange" />
     <child
-      link="tool" />
+      link="gripper_base_link" />
     <axis
       xyz="1 0 0" />
     <limit effort="30" velocity="1.0" lower="${roll_lower_limit}" upper="${roll_upper_limit}" />
+  </joint>
+  <!-- Gripper -->
+  <link
+    name="gripper_base_link">
+    <inertial>
+      <origin
+        xyz="0.0593648790750631 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="1.59125921054032" />
+      <inertia
+        ixx="0.00147991252859225"
+        ixy="1.34230402513126E-19"
+        ixz="1.07467005492524E-19"
+        iyy="0.00232303179944379"
+        iyz="-4.07594317291221E-20"
+        izz="0.00291367454744379" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="${-M_PI/2.0} 0 0" />
+      <geometry>
+        <mesh
+          filename="package://scorbot_description/meshes/gripper_base.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="${-M_PI/2.0} 0 0" />
+      <geometry>
+        <mesh
+          filename="package://scorbot_description/meshes/gripper_base.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="gripper_finger_left">
+    <inertial>
+      <origin
+        xyz="0.021935 0.017436 0.0038599"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="1.4677E-05"
+        ixy="-7.1238E-06"
+        ixz="3.6153E-06"
+        iyy="1.82E-05"
+        iyz="2.343E-06"
+        izz="2.4607E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="${-M_PI/2.0} 0 0" />
+      <geometry>
+        <mesh
+          filename="package://scorbot_description/meshes/gripper_finger.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.89804 0.91765 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="${-M_PI/2.0} 0 0" />
+      <geometry>
+        <mesh
+          filename="package://scorbot_description/meshes/gripper_finger.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gripper_finger_left_joint"
+    type="prismatic">
+    <origin
+      xyz="0.118 0.0026 0.010"
+      rpy="0 0 0" />
+    <parent
+      link="gripper_base_link" />
+    <child
+      link="gripper_finger_left" />
+    <axis
+      xyz="0 1 0" />
+    <limit effort="30" velocity="1.0" lower="${gripper_lower_limit}" upper="${gripper_upper_limit}" />
+  </joint>
+  <link
+    name="gripper_finger_right">
+    <inertial>
+      <origin
+        xyz="0.021935 0.014436 -0.0061401"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="1.4677E-05"
+        ixy="-7.1238E-06"
+        ixz="3.6153E-06"
+        iyy="1.82E-05"
+        iyz="2.343E-06"
+        izz="2.4607E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="${M_PI/2.0} 0 0" />
+      <geometry>
+        <mesh
+          filename="package://scorbot_description/meshes/gripper_finger.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.89804 0.91765 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="${M_PI/2.0} 0 0" />
+      <geometry>
+        <mesh
+          filename="package://scorbot_description/meshes/gripper_finger.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gripper_finger_right_joint"
+    type="prismatic">
+    <origin
+      xyz="0.118 -0.0026 -0.010"
+      rpy="0 0 0" />
+    <parent
+      link="gripper_base_link" />
+    <child
+      link="gripper_finger_right" />
+    <axis
+      xyz="0 -1 0" />
+    <limit effort="30" velocity="1.0" lower="${gripper_lower_limit}" upper="${gripper_upper_limit}" />
   </joint>
 </robot>
