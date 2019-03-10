@@ -75,16 +75,19 @@
       <material
         name="">
         <color
-          rgba="0.49804 0.49804 0.49804 1" />
+          rgba="0.5 0.5 0.5 1" />
       </material>
     </visual>
     <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="${M_PI/2.0} 0 0" />
+      <origin rpy="0 0 0" xyz="0 0 0.0225"/>
       <geometry>
-        <mesh
-          filename="package://scorbot_description/meshes/base.dae" />
+        <cylinder length="0.045" radius="0.16"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.085"/>
+      <geometry>
+        <cylinder length="0.170" radius="0.05"/>
       </geometry>
     </collision>
   </link>
@@ -115,16 +118,13 @@
       <material
         name="">
         <color
-          rgba="0.49804 0.49804 0.49804 1" />
+          rgba="0.5 0.5 0.5 1" />
       </material>
     </visual>
     <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="${-M_PI/2.0} 0 0" />
+      <origin rpy="0 0 0" xyz="-0.08 0 0.125"/>
       <geometry>
-        <mesh
-          filename="package://scorbot_description/meshes/body.dae" />
+        <box size="0.380 0.18 0.25"/>
       </geometry>
     </collision>
   </link>
@@ -169,16 +169,13 @@
       <material
         name="">
         <color
-          rgba="0.49804 0.49804 0.49804 1" />
+          rgba="0.5 0.5 0.5 1" />
       </material>
     </visual>
     <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="${-M_PI/2.0} 0 0" />
+      <origin rpy="0 0 0" xyz="0.06 -0.06 0"/>
       <geometry>
-        <mesh
-          filename="package://scorbot_description/meshes/upper_arm.dae" />
+        <box size="0.60 0.12 0.16"/>
       </geometry>
     </collision>
   </link>
@@ -223,16 +220,13 @@
       <material
         name="">
         <color
-          rgba="0.49804 0.49804 0.49804 1" />
+          rgba="0.5 0.5 0.5 1" />
       </material>
     </visual>
     <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="${M_PI/2.0} 0 0" />
+      <origin rpy="0 0 0" xyz="0.05 0.035 0"/>
       <geometry>
-        <mesh
-          filename="package://scorbot_description/meshes/forearm.dae" />
+        <box size="0.3 0.095 0.12"/>
       </geometry>
     </collision>
   </link>
@@ -277,16 +271,13 @@
       <material
         name="">
         <color
-          rgba="0.10196 0.10196 0.10196 1" />
+          rgba="0.1 0.1 0.1 1" />
       </material>
     </visual>
     <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="${-M_PI/2.0} 0 0" />
+      <origin rpy="${-M_PI/2.0} 0 0" xyz="0 -0.024 0"/>
       <geometry>
-        <mesh
-          filename="package://scorbot_description/meshes/flange.dae" />
+        <cylinder length="0.105" radius="0.05"/>
       </geometry>
     </collision>
   </link>
@@ -347,16 +338,19 @@
       <material
         name="">
         <color
-          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+          rgba="0.1 0.1 0.1 1" />
       </material>
     </visual>
     <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="${-M_PI/2.0} 0 0" />
+      <origin rpy="0 0 0" xyz="0.08 0.0 0.0"/>
       <geometry>
-        <mesh
-          filename="package://scorbot_description/meshes/gripper_base.dae" />
+        <box size="0.078 0.110 0.055"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 ${-M_PI/2.0} 0" xyz="0.019 0 0"/>
+      <geometry>
+        <cylinder length="0.044" radius="0.05"/>
       </geometry>
     </collision>
   </link>
@@ -387,7 +381,7 @@
       <material
         name="">
         <color
-          rgba="0.89804 0.91765 0.92941 1" />
+          rgba="0.9 0.9 0.9 1" />
       </material>
     </visual>
     <collision>
@@ -441,7 +435,7 @@
       <material
         name="">
         <color
-          rgba="0.89804 0.91765 0.92941 1" />
+          rgba="0.9 0.9 0.9 1" />
       </material>
     </visual>
     <collision>
