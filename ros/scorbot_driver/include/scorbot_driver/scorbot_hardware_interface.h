@@ -38,7 +38,7 @@ namespace scorbot_driver
       hardware_interface::JointStateInterface _jnt_state_interface;
       hardware_interface::PositionJointInterface _jnt_pos_interface;
       // For the gripper effort interface it's used
-      hardware_interface::EffortJointInterface _jnt_eff_interface;
+      //hardware_interface::EffortJointInterface _jnt_eff_interface;
 
       // Memory space shared with the controller
       // It reads here the latest robot's state and put here the next desired values
