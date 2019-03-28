@@ -86,6 +86,7 @@ namespace scorbot_driver
           return _joint_data.current;
         }
 
+        // RT method
         void update()
         {
           // Get from RT buffers
@@ -110,7 +111,7 @@ namespace scorbot_driver
               return;
 
           // Update values using RT buffer
-          ROS_DEBUG_STREAM_NAMED(_joint_name,"Setting current_limit at " << config.current_limit);
+          ROS_INFO_STREAM_NAMED(_joint_name,"Setting current_limit for motor " << _joint_name << " at " << config.current_limit);
           _current_limit_.writeFromNonRT(std::floor(config.current_limit*CURRENT_FACTOR));
 
 
