@@ -51,7 +51,7 @@ namespace scorbot
             // Joint states publisher for shadow robot
             scorbot_shadow_pub_ = nh_.advertise<sensor_msgs::JointState>("shadow_joint_states", 10);
             // Fill joint state message for shadow robot
-            std::size_t shadow_dof = 5;
+            std::size_t shadow_dof = 7; // 5 DOF for joints + 2 DOF for gripper
             scorbot_shadow_js_.position.resize(shadow_dof, 0.0);
             scorbot_shadow_js_.velocity.resize(shadow_dof, 0.0);
             scorbot_shadow_js_.effort.resize(shadow_dof, 0.0);
@@ -61,6 +61,8 @@ namespace scorbot
             scorbot_shadow_js_.name.push_back("elbow");
             scorbot_shadow_js_.name.push_back("pitch");
             scorbot_shadow_js_.name.push_back("roll");
+            scorbot_shadow_js_.name.push_back("gripper_finger_right_joint");
+            scorbot_shadow_js_.name.push_back("gripper_finger_left_joint");
 
             // Robot command publisher
             scorbot_base_cmd_pub_ = nh_.advertise<std_msgs::Float64>("/scorbot/base_controller/command", 10);
@@ -85,11 +87,40 @@ namespace scorbot
             publish_cmd_ = (bool) haptic_button.grey_button;
         }
 
+        std::size_t getJointIndex(const std::vector<std::string> &joint_names, const std::string &name)
+        {
+            for(std::size_t i = 0; i < joint_names.size(); i++)
+            {
+                if(joint_names[i] == name)
+                    return i;
+            }
+        }
+
         void robotJointStateCallback(const sensor_msgs::JointStateConstPtr &robot_joint_state)
         {
-            // Estimate force
-            force_cmd_.force.x = 10.0*(robot_joint_state->position[0] - scorbot_shadow_js_.position[0]);
-            //force_cmd_.force.y = -5.0*(robot_joint_state->position[1] - scorbot_shadow_js_.position[1]);
+            // Index
+            std::size_t robot_idx = 0;
+            std::size_t shadow_idx = 0;
+            // Base
+            robot_idx = getJointIndex(robot_joint_state->name, "base");
+            shadow_idx = getJointIndex(scorbot_shadow_js_.name, "base");
+            force_cmd_.force.x = 10.0*(robot_joint_state->position[robot_idx] - scorbot_shadow_js_.position[shadow_idx]);
+            ROS_DEBUG_STREAM("robot base: " << robot_joint_state->position[robot_idx] << " | shadow base: " << scorbot_shadow_js_.position[shadow_idx]
+                << " | base force " << force_cmd_.force.x);
+            // Shoulder
+            robot_idx = getJointIndex(robot_joint_state->name, "shoulder");
+            shadow_idx = getJointIndex(scorbot_shadow_js_.name, "shoulder");
+            force_cmd_.force.y = -20.0*(robot_joint_state->position[robot_idx] - scorbot_shadow_js_.position[shadow_idx]);
+            ROS_DEBUG_STREAM("robot shoulder: " << robot_joint_state->position[robot_idx] << " | shadow shoulder: " << scorbot_shadow_js_.position[shadow_idx]
+                << " | shoulder force " << force_cmd_.force.y);
+            // Elbow
+            robot_idx = getJointIndex(robot_joint_state->name, "elbow");
+            shadow_idx = getJointIndex(scorbot_shadow_js_.name, "elbow");
+            force_cmd_.force.z = 20.0*(robot_joint_state->position[robot_idx] - scorbot_shadow_js_.position[shadow_idx]);
+            ROS_DEBUG_STREAM("robot elbow: " << robot_joint_state->position[robot_idx] << " | shadow elbow: " << scorbot_shadow_js_.position[shadow_idx]
+                << " | elbow force " << force_cmd_.force.y);
+
+            
             haptic_force_pub_.publish(force_cmd_);
         }
 
