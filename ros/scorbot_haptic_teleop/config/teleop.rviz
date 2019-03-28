@@ -4,6 +4,8 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /Global Options1
+        - /Grid1
         - /Scorbot shadow1
         - /Phantom Omni1
       Splitter Ratio: 0.350584
@@ -31,9 +33,9 @@ Visualization Manager:
   Class: ""
   Displays:
     - Alpha: 0.5
-      Cell Size: 1
+      Cell Size: 0.1
       Class: rviz/Grid
-      Color: 160; 160; 164
+      Color: 48; 48; 49
       Enabled: true
       Line Style:
         Line Width: 0.03
@@ -45,7 +47,7 @@ Visualization Manager:
         Y: 0
         Z: 0
       Plane: XY
-      Plane Cell Count: 10
+      Plane Cell Count: 30
       Reference Frame: <Fixed Frame>
       Value: true
     - Alpha: 0.7
@@ -78,7 +80,17 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        tool:
+        gripper_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper_finger_left:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper_finger_right:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -138,7 +150,17 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        tool:
+        gripper_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper_finger_left:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper_finger_right:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -207,7 +229,7 @@ Visualization Manager:
       Visual Enabled: true
   Enabled: true
   Global Options:
-    Background Color: 48; 48; 48
+    Background Color: 220; 220; 220
     Fixed Frame: scorbot_shadow/base
     Frame Rate: 30
   Name: root
@@ -229,22 +251,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.2217
+      Distance: 2.10168
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.278635
-        Y: 0.222978
-        Z: 0.0325989
+        X: -0.208684
+        Y: -0.0275302
+        Z: -0.00597138
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.224797
+      Pitch: 0.389797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.410399
+      Yaw: 0.655399
     Saved: ~
 Window Geometry:
   Displays:
@@ -262,5 +284,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1200
-  X: 539
-  Y: 58
+  X: 529
+  Y: 48

@@ -6,7 +6,7 @@
     default="True" />
   <param
     name="robot_description"
-    command="$(find xacro)/xacro.py '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
+    command="$(find xacro)/xacro '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
   <param
     name="use_gui"
     value="$(arg gui)" />
