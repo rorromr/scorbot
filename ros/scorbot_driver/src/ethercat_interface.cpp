@@ -28,14 +28,14 @@ namespace scorbot_driver
       while (init_attempts-- && (ec_slave[0].state != EC_STATE_INIT));
       if (ec_slave[0].state == EC_STATE_INIT )
       {
-        std::cout << "Init state (INIT) reached for all slaves." << std::endl;
+        ROS_INFO("Init state (INIT) reached for all slaves.");
       }
       else
       {
-        std::cout << "Not all slaves reached init state." << std::endl;
+        ROS_WARN("Not all slaves reached init state.");
       }
       ec_close();
-      std::cout << "EtherCAT closed." << std::endl;
+      ROS_INFO("EtherCAT closed.");
     }
 
     bool EthercatMaster::registerDriver(EthercatDriverPtr driver)
@@ -189,7 +189,7 @@ namespace scorbot_driver
 
       if (success)
       {
-      /* Update drivers */
+      	/* Update drivers */
         for(std::size_t i = 0; i < _drivers.size(); ++i)
         {
           _drivers[i]->update();

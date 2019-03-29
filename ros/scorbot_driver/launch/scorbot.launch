@@ -23,9 +23,8 @@
     /scorbot/elbow_controller
     /scorbot/pitch_controller
     /scorbot/roll_controller
-    /scorbot/gripper_controller
     " />
-
+  <!--     /scorbot/gripper_controller -->
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
     <param name="use_gui" value="$(arg use_gui)" />
     <param name="rate" value="100" />

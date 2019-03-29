@@ -16,7 +16,8 @@
 
   <build_depend>hardware_interface</build_depend>
   <build_depend>controller_manager</build_depend>
-
+  <build_depend>dynamic_reconfigure</build_depend>
+  
   <run_depend>roscpp</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>

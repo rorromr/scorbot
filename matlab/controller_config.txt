@@ -1,0 +1,28 @@
+Configuración
+
+enc_tick Pulsos de encoder por vuelta
+
+Set points
+
+target_position  Posición objetivo en encoder ticks
+position_pid_values Valores PID
+target_velocity
+max_target_velocity
+velocity_pid_values
+target_current
+max_target_current
+current_pid_values
+
+pid_values
+	enable
+	kp
+	ki
+	kd
+	kd_filter
+
+Salidas
+
+motor_current
+actual_velocity_est
+actual_position_est
+actual_position_raw

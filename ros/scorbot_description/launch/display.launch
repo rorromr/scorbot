@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <launch>
   <arg
     name="model" />
@@ -7,14 +6,14 @@
     default="True" />
   <param
     name="robot_description"
-    command="$(find xacro)/xacro.py '$(find scorbot_description)/robots/scorbot.urdf.xacro' --legacy" />
+    command="$(find xacro)/xacro '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
   <param
     name="use_gui"
     value="$(arg gui)" />
   <node
     name="joint_state_publisher"
     pkg="joint_state_publisher"
-    type="joint_state_publisher"/>
+    type="joint_state_publisher" />
   <node
     name="robot_state_publisher"
     pkg="robot_state_publisher"
