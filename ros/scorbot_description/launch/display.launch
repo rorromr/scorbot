@@ -1,26 +1,17 @@
 <launch>
   <arg
-    name="model" />
-  <arg
     name="gui"
     default="True" />
-  <param
-    name="robot_description"
-    command="$(find xacro)/xacro '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
-  <param
-    name="use_gui"
-    value="$(arg gui)" />
-  <node
-    name="joint_state_publisher"
-    pkg="joint_state_publisher"
-    type="joint_state_publisher" />
-  <node
-    name="robot_state_publisher"
-    pkg="robot_state_publisher"
-    type="state_publisher" />
-  <node
-    name="rviz"
-    pkg="rviz"
-    type="rviz"
+  <param name="use_gui" value="$(arg gui)" />
+
+  <include file="$(find scorbot_description)/launch/load_robot_description.launch" />
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
+    <param name="use_gui" value="$(arg gui)" />
+  </node>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <node if="$(arg gui)" name="rviz" pkg="rviz" type="rviz"
     args="-d $(find scorbot_description)/config/urdf.rviz" />
 </launch>
