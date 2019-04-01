@@ -4,8 +4,7 @@ scorbot:
     type: joint_state_controller/JointStateController
     publish_rate: 50
 
-  # Arm's joints controllers
-  
+  # Arm joints controllers
   base_position_controller:
     type: position_controllers/JointPositionController
     joint: base
@@ -25,12 +24,3 @@ scorbot:
   roll_position_controller:
     type: position_controllers/JointPositionController
     joint: roll
-
-  right_finger_position_controller:
-    type: position_controllers/JointPositionController
-    joint: right_finger_tras
-
-  left_finger_position_controller:
-    type: position_controllers/JointPositionController
-    joint: left_finger_tras
-

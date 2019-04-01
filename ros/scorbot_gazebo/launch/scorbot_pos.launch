@@ -16,9 +16,7 @@
 		shoulder_position_controller
 		elbow_position_controller
 		pitch_position_controller
-		roll_position_controller
-		right_finger_position_controller
-		left_finger_position_controller"/>
+		roll_position_controller"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
@@ -28,7 +26,7 @@
   <!-- Load the URDF into the ROS Parameter Server -->
   <param
     name="robot_description"
-    command="$(find xacro)/xacro.py '$(find scorbot_description)/robots/scorbot_pos.urdf.xacro' --legacy" />
+    command="$(find xacro)/xacro '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
 
   <node
     name="robot_state_publisher"
