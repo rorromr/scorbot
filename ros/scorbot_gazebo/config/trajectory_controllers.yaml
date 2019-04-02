@@ -13,6 +13,4 @@ scorbot:
       - elbow
       - pitch
       - roll
-      - right_finger_tras
-      - left_finger_tras
 
