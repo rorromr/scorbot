@@ -4,7 +4,7 @@ scorbot:
     type: joint_state_controller/JointStateController
     publish_rate: 50
 
-  # Arm joints controllers
+  # Joints controllers, each joint with individual command
   base_position_controller:
     type: position_controllers/JointPositionController
     joint: base
@@ -12,7 +12,7 @@ scorbot:
   shoulder_position_controller:
     type: position_controllers/JointPositionController
     joint: shoulder
-  
+
   elbow_position_controller:
     type: position_controllers/JointPositionController
     joint: elbow
@@ -24,3 +24,13 @@ scorbot:
   roll_position_controller:
     type: position_controllers/JointPositionController
     joint: roll
+
+  # Joint trajectory controller, all joints controller
+  trajectory_controller:
+    type: position_controllers/JointTrajectoryController
+    joints:
+      - base
+      - shoulder
+      - elbow
+      - pitch
+      - roll

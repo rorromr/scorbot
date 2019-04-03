@@ -19,6 +19,7 @@
   <xacro:gazebo_link link="left_finger" color="DarkGrey" />
 
   <!-- Transmissions -->
+  <xacro:enable_ros_control prefix="scorbot/"/>
   <xacro:joint_pos_transmission joint="base"/>
   <xacro:joint_pos_transmission joint="shoulder"/>
   <xacro:joint_pos_transmission joint="elbow"/>
