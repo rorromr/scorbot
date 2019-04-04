@@ -40,28 +40,28 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>control_toolbox</build_depend>
+  <build_depend>controller_manager</build_depend>
   <build_depend>gazebo_ros</build_depend>
+  <build_depend>gazebo_ros_control</build_depend>
+  <build_depend>gazebo_ros_pkgs</build_depend>
+  <build_depend>ros_control</build_depend>
+  <build_depend>ros_controllers</build_depend>
   <build_depend>scorbot_description</build_depend>
   <build_depend>urdf</build_depend>
   <build_depend>xacro</build_depend>
-  <build_depend>controller_manager</build_depend>
-  <build_depend>gazebo_ros_pkgs</build_depend>
-  <build_depend>ros_control</build_depend>
-  <build_depend>control_toolbox</build_depend>
 
-  <build_depend>gazebo-ros-control</build_depend>
-  <run_depend>gazebo-ros-control</run_depend>
-
-  <run_depend>gazebo_ros_pkgs</run_depend>
-  <run_depend>ros_control</run_depend>
   <run_depend>control_toolbox</run_depend>
   <run_depend>controller_manager</run_depend>
   <run_depend>gazebo_ros</run_depend>
+  <run_depend>gazebo_ros_control</run_depend>
+  <run_depend>gazebo_ros_pkgs</run_depend>
+  <run_depend>ros_control</run_depend>
+  <run_depend>ros_controllers</run_depend>
   <run_depend>scorbot_description</run_depend>
   <run_depend>urdf</run_depend>
   <run_depend>xacro</run_depend>
-
-
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->

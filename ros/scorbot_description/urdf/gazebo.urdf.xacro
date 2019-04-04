@@ -37,7 +37,7 @@
   </xacro:macro>
 
   <!-- No gravity links -->
-  <xacro:macro name="gazebo_ng_link" params="link color">
+  <xacro:macro name="gazebo_no_gravity_link" params="link color">
     <gazebo reference="${link}">
       <material>Gazebo/${color}</material>
       <gravity>0</gravity>
@@ -49,6 +49,13 @@
   <xacro:macro name="gazebo_link" params="link color">
     <gazebo reference="${link}">
       <material>Gazebo/${color}</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+  </xacro:macro>
+  <!-- Normal links DAE file -->
+  <xacro:macro name="gazebo_dae_link" params="link">
+    <gazebo reference="${link}">
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
