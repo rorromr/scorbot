@@ -92,7 +92,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
 generate_dynamic_reconfigure_options(
-  cfg/Parameters.cfg
+  cfg/ScorbotJointParameters.cfg
 )
 
 ###################################
@@ -140,6 +140,7 @@ add_executable(test_scorbot src/test_scorbot.c)
 target_link_libraries(test_scorbot ${catkin_LIBRARIES} ${SOEM_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(scorbot_driver src/scorbot_control_hw.cpp src/scorbot_control_loop.cpp src/ethercat_interface.cpp src/scorbot_hardware_interface.cpp)
+add_dependencies(scorbot_driver ${PROJECT_NAME}_gencfg)
 target_link_libraries(scorbot_driver ${catkin_LIBRARIES} ${SOEM_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 # add_custom_command(

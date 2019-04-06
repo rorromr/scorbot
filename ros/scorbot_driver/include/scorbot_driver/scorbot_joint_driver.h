@@ -4,7 +4,7 @@
 #include <realtime_tools/realtime_buffer.h>
 
 #include "scorbot_driver/ethercat_driver.h"
-#include "scorbot_driver/MotorConfig.h"
+#include "scorbot_driver/ScorbotJointParametersConfig.h"
 
 // Dynamic reconfigure
 #include <dynamic_reconfigure/server.h>
@@ -46,7 +46,7 @@ namespace scorbot_driver
           _set_point.controlRegA = 0U;
           _set_point.controlRegB = 0U;
           _set_point.currentRef = 0;
-          _set_point.currentLim = std::floor(MotorConfig::__getDefault__().current_limit*CURRENT_FACTOR);
+          _set_point.currentLim = std::floor(ScorbotJointParametersConfig::__getDefault__().current_limit*CURRENT_FACTOR);
           _set_point.pidCurrentKp = 0U;
           _set_point.pidCurrentKi = 0U;
           _set_point.pidCurrentKd = 0U;
@@ -103,7 +103,7 @@ namespace scorbot_driver
           return _joint_name;
         }
 
-        void dynamicReconfigCallback(scorbot_driver::MotorConfig &config, uint32_t level)
+        void dynamicReconfigCallback(scorbot_driver::ScorbotJointParametersConfig &config, uint32_t level)
         {
           ROS_DEBUG_STREAM_NAMED(_joint_name,"Dynamics reconfigure callback recieved.");
 
@@ -130,7 +130,7 @@ namespace scorbot_driver
         realtime_tools::RealtimeBuffer<int16_t> _current_limit_;
         // Dynamics reconfigure
         bool _dynamic_reconfig_initialized;
-        typedef dynamic_reconfigure::Server<scorbot_driver::MotorConfig> DynamicReconfigServer;
+        typedef dynamic_reconfigure::Server<scorbot_driver::ScorbotJointParametersConfig> DynamicReconfigServer;
         boost::shared_ptr<DynamicReconfigServer> _param_reconfig_server;
         DynamicReconfigServer::CallbackType _param_reconfig_callback;
         boost::recursive_mutex _param_reconfig_mutex;
