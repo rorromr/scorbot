@@ -7,9 +7,10 @@
 
   <!-- Parameters for the hardware interface and controllers -->
   <rosparam file="$(find scorbot_driver)/config/controllers.yaml"/>
-
   <!-- launch our hardware interface -->
-  <node ns="scorbot" pkg="scorbot_driver" type="scorbot_driver" name="scorbot_control_hw" output="screen"/>
+  <node ns="scorbot" pkg="scorbot_driver" type="scorbot_driver" name="scorbot_control_hw" output="screen">
+    <param name="ethercat_iface" value="eno1" type="str" />
+  </node>
 
   <!-- Start a controller for our dummy robot -->
   <node ns="scorbot" name="controller" pkg="controller_manager" type="spawner" respawn="false"
