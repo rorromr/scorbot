@@ -29,8 +29,8 @@ namespace scorbot_driver
       /* Update motors */
       for(std::size_t i = 0; i < _motors.size(); ++i)
       {
-        _motors[i]->setPosition(_joint_commands[i]*RAD2ENC);
-        _joint_angles[i] = _motors[i]->getPosition()*ENC2RAD;
+        _motors[i]->setPosition(_joint_commands[i]);
+        _joint_angles[i] = _motors[i]->getPosition();
         _joint_efforts[i] = _motors[i]->getCurrent();
       }
       /* Update gripper */
