@@ -4,40 +4,49 @@
 
   <!-- Use RViz and Joint state slides -->
   <arg name="use_gui" default="false"/>
+  <!-- Controller type -->
+  <arg name="trajectory_controller" default="false"/>
 
-  <!-- Parameters for the hardware interface and controllers -->
-  <rosparam file="$(find scorbot_driver)/config/controllers.yaml"/>
-  <!-- launch our hardware interface -->
-  <node ns="scorbot" pkg="scorbot_driver" type="scorbot_driver" name="scorbot_control_hw" output="screen">
-    <param name="ethercat_iface" value="eno1" type="str" />
-  </node>
+  <group ns="scorbot">
+    <!-- Parameters for the hardware interface and controllers -->
+    <rosparam file="$(find scorbot_driver)/config/controllers.yaml"/>
 
-  <!-- Start a controller for our dummy robot -->
-  <node ns="scorbot" name="controller" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" args="
-    --shutdown-timeout 3.0
-    --timeout 3.0
-    --namespace /scorbot
-    /scorbot/joint_state_controller
-    /scorbot/base_controller
-    /scorbot/shoulder_controller
-    /scorbot/elbow_controller
-    /scorbot/pitch_controller
-    /scorbot/roll_controller
-    " />
-  <!--     /scorbot/gripper_controller -->
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <param name="use_gui" value="$(arg use_gui)" />
-    <param name="rate" value="100" />
-    <rosparam param="source_list">['/scorbot/joint_states']</rosparam>
-  </node>
+    <!-- Scorbot hardware interface -->
+    <node pkg="scorbot_driver" type="scorbot_driver" name="scorbot_control_hw" output="screen"/>
 
-  <!-- URDF -->
-  <param name="robot_description" command="$(find xacro)/xacro.py '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
-  <!-- TF -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
-    <param name="tf_prefix " value="scorbot"/>
-  </node>
+    <!-- Load the controllers for Scorbot -->
+    <!-- Use individual controllers -->
+    <node unless="$(arg trajectory_controller)" name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args="joint_state_controller
+        base_controller
+        shoulder_controller
+        elbow_controller
+        pitch_controller
+        roll_controller"/>
+    <!-- Use trajectory controllers -->
+    <node if="$(arg trajectory_controller)" name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args="joint_state_controller
+        trajectory_controller"/>
+
+    <!-- Joint states -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+      <param name="use_gui" value="$(arg use_gui)" />
+      <param name="rate" value="100" />
+      <rosparam param="source_list">['/scorbot/joint_states']</rosparam>
+    </node>
+
+    <!-- URDF -->
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find scorbot_description)/robots/scorbot.urdf.xacro'" />
+
+    <!-- TF -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+      <param name="tf_prefix " value="scorbot"/>
+    </node>
+
+    <!--RQT joint trajectory controller -->
+    <node if="$(arg use_gui)" name="rqt_joint_trajectory_controller" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller" />
+
+  </group>
 
   <!-- RViz with robot -->
   <node if="$(arg use_gui)" name="scorbot_rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_driver)/config/basic.rviz" />
