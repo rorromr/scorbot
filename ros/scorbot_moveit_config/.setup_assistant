@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: scorbot_description
+    relative_path: robots/scorbot.urdf
+  SRDF:
+    relative_path: config/scorbot.srdf
+  CONFIG:
+    author_name: Rodrigo Muñoz
+    author_email: rorro.mr@gmail.com
+    generated_timestamp: 1554422256

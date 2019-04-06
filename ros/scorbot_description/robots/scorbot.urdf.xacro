@@ -10,15 +10,16 @@
 
   <!-- Gazebo elements -->
   <!-- Gazebo Links material -->
-  <xacro:gazebo_link link="base" color="White" />
-  <xacro:gazebo_link link="body" color="White" />
-  <xacro:gazebo_link link="upper_arm" color="White" />
-  <xacro:gazebo_link link="forearm" color="White" />
-  <xacro:gazebo_link link="flange" color="DarkGrey" />
-  <xacro:gazebo_link link="right_finger" color="DarkGrey" />
-  <xacro:gazebo_link link="left_finger" color="DarkGrey" />
+  <xacro:gazebo_dae_link link="base" />
+  <xacro:gazebo_dae_link link="body" />
+  <xacro:gazebo_dae_link link="upper_arm" />
+  <xacro:gazebo_dae_link link="forearm" />
+  <xacro:gazebo_dae_link link="flange" />
+  <xacro:gazebo_dae_link link="right_finger" />
+  <xacro:gazebo_dae_link link="left_finger" />
 
   <!-- Transmissions -->
+  <xacro:enable_ros_control prefix="scorbot/"/>
   <xacro:joint_pos_transmission joint="base"/>
   <xacro:joint_pos_transmission joint="shoulder"/>
   <xacro:joint_pos_transmission joint="elbow"/>
@@ -49,6 +50,13 @@
   <!-- Gripper joint limits -->
   <xacro:property name="gripper_upper_limit" value="0.016" />
   <xacro:property name="gripper_lower_limit" value="-0.018" />
+
+  <!-- Attach to the world frame -->
+  <link name="world"/>
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base"/>
+  </joint>
 
   <link
     name="base">

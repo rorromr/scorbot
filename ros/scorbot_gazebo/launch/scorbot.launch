@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
   <!-- Arguments -->
-  <arg name="use_gui" default="true"/>
+  <arg name="use_gui" default="false"/>
   <param name="use_gui" value="$(arg use_gui)" />
+  <!-- Controller type -->
+  <arg name="trajectory_controller" default="false"/>
   <!-- Publish /clock -->
   <arg name="use_sim_time" value="true"/>
  
   <!-- Load joint controller configurations from YAML file to parameter server -->
-  <rosparam file="$(find scorbot_gazebo)/config/trajectory_controllers.yaml" command="load"/>
+  <rosparam file="$(find scorbot_gazebo)/config/controllers.yaml" command="load"/>
 
   <!-- Load the controllers-->
-  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="scorbot"
+  <!-- Use individual controllers -->
+  <node unless="$(arg trajectory_controller)" name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="scorbot"
     args="joint_state_controller
-        scorbot_controller"/>
+        base_position_controller
+        shoulder_position_controller
+        elbow_position_controller
+        pitch_position_controller
+        roll_position_controller"/>
+  <!-- Use trajectory controllers -->
+  <node if="$(arg trajectory_controller)" name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="scorbot"
+        args="joint_state_controller
+        trajectory_controller"/>
 
+  <!-- Gazebo -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="gui" value="$(arg use_gui)"/>
@@ -25,5 +37,7 @@
   
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model scorbot_model -param robot_description"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="scorbot_tf_broadcaster" args="0 0 0 0 0 0 world real/base 20" />
 
 </launch>
