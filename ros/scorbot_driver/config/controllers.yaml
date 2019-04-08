@@ -1,6 +1,6 @@
 joint_state_controller:
   type: joint_state_controller/JointStateController
-  publish_rate: 60
+  publish_rate: 50
 
 # Joints controllers, each joint with individual command
 base_controller:
