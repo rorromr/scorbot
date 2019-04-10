@@ -7,6 +7,8 @@
   <arg name="trajectory_controller" default="true"/>
   <!-- Publish /clock -->
   <arg name="use_sim_time" value="true"/>
+  <!-- Fix base to World, publish TF for /world frame -->
+  <arg name="fixed" default="true"/>
  
   <!-- Gazebo -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -38,6 +40,8 @@
     <node if="$(arg trajectory_controller)" name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
           args="joint_state_controller
         trajectory_controller"/>
+    <!-- Publish TF for /world frame -->
+    <node if="$(arg fixed)" pkg="tf" type="static_transform_publisher" name="world_fixed_tf" args="0 0 0 0 0 0 /world /base 100"/>
   </group>
 
 </launch>
