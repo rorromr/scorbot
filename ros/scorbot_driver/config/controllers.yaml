@@ -6,22 +6,32 @@ joint_state_controller:
 base_controller:
   type: position_controllers/JointPositionController
   joint: base
+  encoder_ticks_per_revolution: 46080
+  current_limit: 2.5
 
 shoulder_controller:
   type: position_controllers/JointPositionController
   joint: shoulder
+  encoder_ticks_per_revolution: 46080
+  current_limit: 2.5
 
 elbow_controller:
   type: position_controllers/JointPositionController
   joint: elbow
+  encoder_ticks_per_revolution: 46080
+  current_limit: 2.5
 
 pitch_controller:
   type: position_controllers/JointPositionController
   joint: pitch
+  encoder_ticks_per_revolution: 46080
+  current_limit: 1.875
 
 roll_controller:
   type: position_controllers/JointPositionController
   joint: roll
+  encoder_ticks_per_revolution: 15360
+  current_limit: 1.0
 
 # Joint trajectory controller, all joints controller
 trajectory_controller:

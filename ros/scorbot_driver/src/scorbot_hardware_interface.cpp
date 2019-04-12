@@ -13,6 +13,7 @@ namespace scorbot_driver
       _motor_names.push_back("elbow");
       _motor_names.push_back("pitch");
       _motor_names.push_back("roll");
+
       // Gripper limit at 0.5 A
       /*
       _gripper_current_limit_.initRT(0.5);
