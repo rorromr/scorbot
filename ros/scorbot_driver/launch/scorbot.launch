@@ -28,7 +28,8 @@
     <!-- Use trajectory controllers -->
     <node if="$(arg trajectory_controller)" name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
           args="joint_state_controller
-        trajectory_controller"/>
+        trajectory_controller
+        gripper_controller"/>
 
     <!-- Load the URDF into the ROS Parameter Server -->
     <include file="$(find scorbot_description)/launch/load_robot_description.launch" />

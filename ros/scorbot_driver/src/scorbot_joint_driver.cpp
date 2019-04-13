@@ -128,4 +128,47 @@ namespace scorbot_driver {
     _param_reconfig_server->updateConfig(config);
     _param_reconfig_mutex.unlock();
   }
+
+    const double ScorbotGripperDriver::CURRENT_FACTOR = 160.0;
+    const double ScorbotGripperDriver::ENCODER_FACTOR = 0.018/1400;
+    const double ScorbotGripperDriver::ENCODER_OFFSET = 1400;
+    ScorbotGripperDriver::ScorbotGripperDriver() :
+        EthercatDriver()
+    {
+      /* Init struct at zero */
+      _set_point.controlRegA = 0U;
+      _set_point.controlRegB = 0U;
+      _set_point.currentRef = 0;
+      _set_point.currentLim = (int16_t) std::floor(1.875 * ScorbotGripperDriver::CURRENT_FACTOR);
+      _set_point.pidCurrentKp = 0U;
+      _set_point.pidCurrentKi = 0U;
+      _set_point.pidCurrentKd = 0U;
+      _set_point.testFloat = 0.0f;
+
+      _joint_data.encPosition = 0;
+      _joint_data.encSpeed = 0;
+      _joint_data.current = 0;
+      _joint_data.limits = 0U;
+    };
+
+    void ScorbotGripperDriver::setCurrent(double target) {
+      _set_point.currentRef = (int16_t) std::floor(target * ScorbotGripperDriver::CURRENT_FACTOR);
+    }
+
+    double ScorbotGripperDriver::getPosition() {
+      return (-_joint_data.encPosition - ScorbotGripperDriver::ENCODER_OFFSET)*ScorbotGripperDriver::ENCODER_FACTOR;
+    }
+
+    double ScorbotGripperDriver::getCurrent() {
+      return _joint_data.current*1.0/ScorbotGripperDriver::CURRENT_FACTOR;
+    }
+
+    // RT method
+    void ScorbotGripperDriver::update() {
+      /* Get gripper data */
+      _joint_data = *((joint_data_t *) (_datap->inputs));
+      /* Apply set point */
+      setpoint_t *data_out = ((setpoint_t *) (_datap->outputs));
+      *data_out = _set_point;
+    }
 }

@@ -39,7 +39,7 @@ namespace scorbot_driver
       hardware_interface::JointStateInterface _jnt_state_interface;
       hardware_interface::PositionJointInterface _jnt_pos_interface;
       // For the gripper effort interface it's used
-      //hardware_interface::EffortJointInterface _jnt_eff_interface;
+      hardware_interface::EffortJointInterface _jnt_eff_interface;
 
       // Memory space shared with the controller
       // It reads here the latest robot's state and put here the next desired values
@@ -58,12 +58,8 @@ namespace scorbot_driver
       // EtherCAT connection
       EthercatMaster _master;
       std::vector<ScorbotJointDriverPtr> _motors;
-      ScorbotJointDriverPtr _gripper;
+      ScorbotGripperDriverPtr _gripper;
       std::vector<std::string> _motor_names;
-      // Gripper current limitation
-      realtime_tools::RealtimeBuffer<double> _gripper_current_limit_;
-      void _gripper_current_cb(const std_msgs::Float64& current_limit_) {_gripper_current_limit_.writeFromNonRT(current_limit_.data);}
-      ros::Subscriber _gripper_current_limit_sub_;
   };
 }
 

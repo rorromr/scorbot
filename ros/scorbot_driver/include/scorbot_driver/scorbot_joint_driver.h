@@ -69,6 +69,22 @@ namespace scorbot_driver {
     };
 
     typedef boost::shared_ptr<ScorbotJointDriver> ScorbotJointDriverPtr;
+
+    class ScorbotGripperDriver : public EthercatDriver {
+    public:
+        ScorbotGripperDriver();
+        void setCurrent(double target);
+        double getPosition();
+        double getCurrent();
+        void update();
+    private:
+        static const double CURRENT_FACTOR;
+        static const double ENCODER_FACTOR;
+        static const double ENCODER_OFFSET;
+        setpoint_t _set_point;
+        joint_data_t _joint_data;
+    };
+    typedef boost::shared_ptr<ScorbotGripperDriver> ScorbotGripperDriverPtr;
 }
 
 #endif //SCORBOT_DRIVER_SCORBOT_JOINT_DRIVER_H_H
