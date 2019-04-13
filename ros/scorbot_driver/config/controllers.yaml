@@ -24,13 +24,13 @@ elbow_controller:
 pitch_controller:
   type: position_controllers/JointPositionController
   joint: pitch
-  encoder_ticks_per_revolution: 46080
+  encoder_ticks_per_revolution: 19200
   current_limit: 1.875
 
 roll_controller:
   type: position_controllers/JointPositionController
   joint: roll
-  encoder_ticks_per_revolution: 15360
+  encoder_ticks_per_revolution: 9600
   current_limit: 1.0
 
 # Joint trajectory controller, all joints controller

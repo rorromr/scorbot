@@ -310,7 +310,7 @@
     <child
       link="gripper_base_link" />
     <axis
-      xyz="1 0 0" />
+      xyz="-1 0 0" />
     <limit effort="30" velocity="1.0" lower="${roll_lower_limit}" upper="${roll_upper_limit}" />
   </joint>
   <!-- Gripper -->
