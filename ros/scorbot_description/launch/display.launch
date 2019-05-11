@@ -1,16 +1,25 @@
 <launch>
-  <arg name="gui" default="True" />
-  <param name="use_gui" value="$(arg gui)" />
+  <arg name="use_gui" default="True" />
+  <param name="use_gui" value="$(arg use_gui)" />
 
   <group ns="scorbot">
-    <include file="$(find scorbot_description)/launch/load_robot_description.launch" />
 
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
-      <param name="use_gui" value="$(arg gui)" />
+    <!-- Load the URDF into the ROS Parameter Server -->
+    <include file="$(find scorbot_description)/launch/load_robot_description.launch">
+      <arg name="fixed" value="true"/>
+    </include>
+    <!-- TF from joint states -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+      <param name="tf_prefix" value="/scorbot" />
+    </node>
+    <!-- Joint states -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+      <param name="use_gui" value="$(arg use_gui)" />
+      <param name="rate" value="100" />
+      <rosparam param="source_list">['/scorbot/joint_states']</rosparam>
     </node>
 
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
   </group>
-  <node if="$(arg gui)" name="rviz_scorbot_display" pkg="rviz" type="rviz" args="-d $(find scorbot_description)/config/urdf.rviz" />
+  <node if="$(arg use_gui)" name="rviz_scorbot_display" pkg="rviz" type="rviz" args="-d $(find scorbot_description)/config/urdf.rviz" />
   
 </launch>

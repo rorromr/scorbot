@@ -51,6 +51,14 @@
   <xacro:property name="gripper_upper_limit" value="0.016" />
   <xacro:property name="gripper_lower_limit" value="-0.018" />
 
+  <xacro:if value="$(arg fixed)">
+    <link name="world"/>
+    <joint name="fixed" type="fixed">
+      <parent link="world"/>
+      <child link="base"/>
+    </joint>
+  </xacro:if>
+
   <link
     name="base">
     <inertial>

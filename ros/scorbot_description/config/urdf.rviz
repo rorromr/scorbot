@@ -3,7 +3,9 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /Global Options1
+        - /Scorbot Model1
       Splitter Ratio: 0.5
     Tree Height: 559
   - Class: rviz/Selection
@@ -102,7 +104,7 @@ Visualization Manager:
           Show Trail: false
       Name: Scorbot Model
       Robot Description: scorbot/robot_description
-      TF Prefix: ""
+      TF Prefix: /scorbot
       Update Interval: 0
       Value: true
       Visual Enabled: true
@@ -123,7 +125,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 230; 230; 230
-    Fixed Frame: base
+    Fixed Frame: scorbot/base
     Frame Rate: 30
   Name: root
   Tools:
@@ -177,5 +179,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1200
-  X: 332
-  Y: 102
+  X: 322
+  Y: 94
