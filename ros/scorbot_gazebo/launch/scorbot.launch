@@ -25,8 +25,9 @@
     <!-- Add URDF in Gazebo  -->
     <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model scorbot_model -param /scorbot/robot_description"/>
     <!-- TF from joint states -->
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+      <param name="tf_prefix" value="/scorbot" />
+    </node>
     <!-- Controllers-->
     <!-- Load joint controller configurations from YAML file to parameter server -->
     <rosparam file="$(find scorbot_gazebo)/config/controllers.yaml" command="load"/>
