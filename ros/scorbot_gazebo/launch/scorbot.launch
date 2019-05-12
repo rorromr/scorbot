@@ -38,11 +38,13 @@
         shoulder_position_controller
         elbow_position_controller
         pitch_position_controller
-        roll_position_controller"/>
+        roll_position_controller
+        --shutdown-timeout 2"/>
     <!-- Use trajectory controllers -->
     <node if="$(arg trajectory_controller)" name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
           args="joint_state_controller
-        trajectory_controller"/>
+        trajectory_controller
+        --shutdown-timeout 2"/>
   </group>
 
 </launch>
