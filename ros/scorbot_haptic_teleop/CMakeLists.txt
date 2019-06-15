@@ -8,16 +8,33 @@ project(scorbot_haptic_teleop)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  omni_common
-  sensor_msgs
-  roscpp
-  rospy
+    #omni_common
+    pcl_ros
+    pcl_conversions
+    sensor_msgs
+    genmsg
+    geometry_msgs
+    rosconsole
+    roscpp
+    rospy
+    std_msgs
+    tf
+    urdf
+    interactive_markers
+    visualization_msgs
 )
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+find_package(OpenCV REQUIRED)
 
+find_package(PCL REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
 
+find_package(PkgConfig)
+pkg_check_modules(EIGEN3 eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIRS})
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
@@ -104,10 +121,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES scorbot_haptic_teleop
-#  CATKIN_DEPENDS phantom_omni roscpp rospy
-#  DEPENDS system_lib
+        #  INCLUDE_DIRS include
+        #  LIBRARIES pcl_fuse
+        #  CATKIN_DEPENDS other_catkin_pkg
+        #  DEPENDS system_lib
 )
 
 ###########
@@ -117,9 +134,15 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
+
+
 include_directories(
-  ${catkin_INCLUDE_DIRS}
+        include
+        ${catkin_INCLUDE_DIRS}
+        ${PCL_INCLUDE_DIRS}
 )
+
+
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -134,8 +157,19 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(haptic_teleop src/haptic_teleop.cpp)
-target_link_libraries(haptic_teleop ${catkin_LIBRARIES})
+#add_executable(haptic_teleop src/haptic_teleop.cpp)
+#target_link_libraries(haptic_teleop ${catkin_LIBRARIES})
+
+
+#add_executable(pcl_fuse src/pcl_fuse.cpp)
+#target_link_libraries(pcl_fuse ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
+add_executable(proxy_calculations src/proxy_calculations.cpp src/haptic_teleop_point_cloud.cpp src/shape_sampler.cpp src/point_cloud_helper.cpp)
+target_link_libraries(proxy_calculations
+        ${catkin_LIBRARIES}
+        ${PCL_LIBRARIES}
+        ${OpenCV_LIBS}
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
