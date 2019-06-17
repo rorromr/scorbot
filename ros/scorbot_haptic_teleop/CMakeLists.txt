@@ -22,6 +22,8 @@ find_package(catkin REQUIRED COMPONENTS
     urdf
     interactive_markers
     visualization_msgs
+    tf_conversions
+    eigen_conversions
 )
 
 
