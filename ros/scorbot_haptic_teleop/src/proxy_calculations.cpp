@@ -31,6 +31,7 @@
 #include <math.h>
 // Markers
 #include <visualization_msgs/Marker.h>
+#include <visualization_msgs/MarkerArray.h>
 // OpenCV
 #include <opencv/cv.h>
 #include <opencv2/core/core.hpp>
@@ -107,6 +108,8 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr sampleSolidPrimitive(const shape_msgs::Solid
   return cloud_ptr;
 }
 
+
+
 class HapticProxy {
     // Radio
     double r1, r2, r3;
@@ -121,6 +124,8 @@ class HapticProxy {
     std::vector<float> point_distance_r2;
     std::vector<float> point_distance_r3;
 
+    std::string frame_id;
+
     struct ProxyState {
         typedef enum
         {
@@ -133,7 +138,7 @@ class HapticProxy {
 
     ProxyState::Type state;
 public:
-    HapticProxy ()
+    HapticProxy(const double r1, const double r2, const double r3, const std::string& frame_id)
     {
       double octree_resolution = 512.0;
       octree.reset(new pcl::octree::OctreePointCloudSearch<pcl::PointXYZ>(octree_resolution));
@@ -143,6 +148,22 @@ public:
       proxy_position.z = 0.0f;
       // Set initial state as Free
       state = ProxyState::FREE;
+      setRadious(r1, r2, r3);
+      this->frame_id = frame_id;
+    }
+
+    void setRadious(const double r1, const double r2, const double r3)
+    {
+      this->r1 = r1;
+      this->r2 = r2;
+      this->r3 = r3;
+    }
+
+    void getRadious(double& r1, double& r2, double& r3) const
+    {
+      r1 = this->r1;
+      r2 = this->r2;
+      r3 = this->r3;
     }
 
     void updateOctreePointCloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr& cloud)
@@ -159,6 +180,19 @@ public:
       proxy_position.x = x;
       proxy_position.y = y;
       proxy_position.z = z;
+    }
+
+    void getProxyPosition(geometry_msgs::PoseStamped& pose) const
+    {
+      pose.header.frame_id = frame_id;
+      pose.pose.position.x = proxy_position.x;
+      pose.pose.position.y = proxy_position.y;
+      pose.pose.position.z = proxy_position.z;
+      // Default orientation
+      pose.pose.orientation.w = 1.0;
+      pose.pose.orientation.x = 0.0;
+      pose.pose.orientation.y = 0.0;
+      pose.pose.orientation.z = 0.0;
     }
 
     void updateProxyPoints()
@@ -214,7 +248,116 @@ public:
       return state_name;
     }
 };
+typedef boost::shared_ptr<HapticProxy> HapticProxyPtr;
 
+
+class HapticProxyMarker
+{
+    // Markers
+    visualization_msgs::Marker r1_marker, r2_marker, r3_marker, state_marker;
+    HapticProxyPtr proxy;
+    ros::NodeHandle nh;
+    ros::Publisher marker_pub;
+  public:
+    HapticProxyMarker(HapticProxyPtr proxy, ros::NodeHandle node_handle):
+      proxy(proxy),
+      nh(node_handle)
+    {
+      marker_pub = nh.advertise<visualization_msgs::MarkerArray>("proxy_marker", 1);
+    }
+
+    void updateProxyMarker()
+    {
+      // Get proxy position
+      geometry_msgs::PoseStamped proxy_pose;
+      proxy->getProxyPosition(proxy_pose);
+      // Sphere markers
+      r1_marker.type = visualization_msgs::Marker::SPHERE;
+      r2_marker.type = visualization_msgs::Marker::SPHERE;
+      r3_marker.type = visualization_msgs::Marker::SPHERE;
+      state_marker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
+      // Add option
+      r1_marker.action = visualization_msgs::Marker::ADD;
+      r2_marker.action = visualization_msgs::Marker::ADD;
+      r3_marker.action = visualization_msgs::Marker::ADD;
+      state_marker.action = visualization_msgs::Marker::ADD;
+      //  Update marker pose
+      r1_marker.pose.position = proxy_pose.pose.position;
+      r1_marker.pose.orientation = proxy_pose.pose.orientation;
+      r2_marker.pose.position = proxy_pose.pose.position;
+      r3_marker.pose.orientation = proxy_pose.pose.orientation;
+      r3_marker.pose.position = proxy_pose.pose.position;
+      r3_marker.pose.orientation = proxy_pose.pose.orientation;
+      state_marker.pose.position = proxy_pose.pose.position;
+
+      // Set the scale of the markers
+      double scale_1, scale_2, scale_3;
+      proxy->getRadious(scale_1, scale_2, scale_3);
+      r1_marker.scale.x = scale_1;
+      r1_marker.scale.y = scale_1;
+      r1_marker.scale.z = scale_1;
+      r2_marker.scale.x = scale_2;
+      r2_marker.scale.y = scale_2;
+      r2_marker.scale.z = scale_2;
+      r3_marker.scale.x = scale_3;
+      r3_marker.scale.y = scale_3;
+      r3_marker.scale.z = scale_3;
+      // Status text
+      state_marker.text = proxy->getStateName();
+      state_marker.scale.x = 0.3;
+      state_marker.scale.y = 0.3;
+      state_marker.scale.z = 0.1;
+      state_marker.pose.position.z += scale_3+0.05;
+      // Set the color and alpha
+      r1_marker.color.r = 1.00f;
+      r1_marker.color.g = 0.34f;
+      r1_marker.color.b = 0.20f;
+      r1_marker.color.a = 1.00f;
+
+      r2_marker.color.r = 1.00f;
+      r2_marker.color.g = 0.75f;
+      r2_marker.color.b = 0.00f;
+      r2_marker.color.a = 0.50f;
+
+      r3_marker.color.r = 0.15f;
+      r3_marker.color.g = 0.68f;
+      r3_marker.color.b = 0.37f;
+      r3_marker.color.a = 0.50f;
+
+      state_marker.color.r = 1.0f;
+      state_marker.color.g = 1.0f;
+      state_marker.color.b = 1.0f;
+      state_marker.color.a = 1.0f;
+      // Set id and namespace
+      r1_marker.id = 1;
+      r1_marker.ns = "proxy_marker/r1";
+      r2_marker.id = 2;
+      r2_marker.ns = "proxy_marker/r2";
+      r3_marker.id = 3;
+      r3_marker.ns = "proxy_marker/r3";
+      state_marker.id = 4;
+      state_marker.ns = "proxy_marker/state";
+      // Update header
+      ros::Time now = ros::Time::now();
+      r1_marker.header.frame_id = proxy_pose.header.frame_id;
+      r1_marker.header.stamp = now;
+      r2_marker.header.frame_id = proxy_pose.header.frame_id;
+      r2_marker.header.stamp = now;
+      r3_marker.header.frame_id = proxy_pose.header.frame_id;
+      r3_marker.header.stamp = now;
+      state_marker.header.frame_id = proxy_pose.header.frame_id;
+      state_marker.header.stamp = now;
+      // Publish Markers
+      visualization_msgs::MarkerArray marker;
+      marker.markers.push_back(r1_marker);
+      marker.markers.push_back(r2_marker);
+      marker.markers.push_back(r3_marker);
+      marker.markers.push_back(state_marker);
+      marker_pub.publish(marker);
+    }
+
+
+};
 
 int main (int argc, char** argv){
   shape_msgs::SolidPrimitive sample;
@@ -230,10 +373,14 @@ int main (int argc, char** argv){
   pub = nh.advertise<sensor_msgs::PointCloud2>("output", 1);
   ros::Rate rate(30);
 
+  HapticProxyPtr proxy = boost::make_shared<HapticProxy>(0.05, 0.075, 0.1, "world");
+  HapticProxyMarker proxy_marker(proxy, nh);
+
   double roll = 0.0, pitch = 0, yaw = 0.0;
   ROS_INFO_STREAM("Starting publishing");
   while(ros::ok())
   {
+    proxy_marker.updateProxyMarker();
     yaw += 0.1;
     Eigen::Quaterniond q;
     q =   Eigen::AngleAxisd(roll,  Eigen::Vector3d::UnitX())
