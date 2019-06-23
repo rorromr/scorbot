@@ -39,11 +39,12 @@
 #include <shape_msgs/SolidPrimitive.h>
 #include <geometry_msgs/Pose.h>
 #include <pcl/point_types.h>
+#include <pcl_ros/transforms.h>
 #include <eigen_conversions/eigen_msg.h>
 #include <string>
 
 //
-pcl::PointCloud<pcl::PointXYZ>::Ptr sampleSolidPrimitive(const shape_msgs::SolidPrimitive& primitive, const geometry_msgs::Pose& pose, const double sample_size = 0.001)
+pcl::PointCloud<pcl::PointXYZ>::Ptr sampleSolidPrimitive(const shape_msgs::SolidPrimitive& primitive, const geometry_msgs::Pose& pose, const std::string& frame_id, const double sample_size = 0.001)
 {
   typedef  struct {
       double init;
@@ -96,6 +97,8 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr sampleSolidPrimitive(const shape_msgs::Solid
         cloud_ptr->height = 1;
         cloud_ptr->width = (int) cloud_ptr->points.size();
         cloud_ptr->is_dense = true;
+        cloud_ptr->header.frame_id = frame_id;
+        pcl_conversions::toPCL(ros::Time::now(), cloud_ptr->header.stamp);
         break;
       }
       default:
@@ -148,11 +151,11 @@ public:
       proxy_position.z = 0.0f;
       // Set initial state as Free
       state = ProxyState::FREE;
-      setRadious(r1, r2, r3);
+      setRadius(r1, r2, r3);
       this->frame_id = frame_id;
     }
 
-    void setRadious(const double r1, const double r2, const double r3)
+    void setRadius(const double r1, const double r2, const double r3)
     {
       this->r1 = r1;
       this->r2 = r2;
@@ -166,7 +169,16 @@ public:
       r3 = this->r3;
     }
 
-    void updateOctreePointCloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr& cloud)
+    std::string getFrameId() const
+    {
+      return frame_id;
+    }
+
+    /**
+     * Update point cloud
+     * @param cloud Input point cloud, must be converted to Haptic proxy frame
+     */
+    void updatePointCloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr& cloud)
     {
       // Delete previous information and regenerate octree based on new point cloud
       octree->deleteTree();
@@ -213,7 +225,7 @@ public:
       ROS_INFO_STREAM("point_idx_r3.size() = "  << point_idx_r3.size());
     }
 
-    void uddateProxyStare(){
+    void updateProxyState(){
       // Update proxy state based on the amount of points in each sphere
 
       // Check for free state, no points in bigger sphere
@@ -293,20 +305,20 @@ class HapticProxyMarker
       // Set the scale of the markers
       double scale_1, scale_2, scale_3;
       proxy->getRadious(scale_1, scale_2, scale_3);
-      r1_marker.scale.x = scale_1;
-      r1_marker.scale.y = scale_1;
-      r1_marker.scale.z = scale_1;
-      r2_marker.scale.x = scale_2;
-      r2_marker.scale.y = scale_2;
-      r2_marker.scale.z = scale_2;
-      r3_marker.scale.x = scale_3;
-      r3_marker.scale.y = scale_3;
-      r3_marker.scale.z = scale_3;
+      r1_marker.scale.x = scale_1*2.0;
+      r1_marker.scale.y = scale_1*2.0;
+      r1_marker.scale.z = scale_1*2.0;
+      r2_marker.scale.x = scale_2*2.0;
+      r2_marker.scale.y = scale_2*2.0;
+      r2_marker.scale.z = scale_2*2.0;
+      r3_marker.scale.x = scale_3*2.0;
+      r3_marker.scale.y = scale_3*2.0;
+      r3_marker.scale.z = scale_3*2.0;
       // Status text
       state_marker.text = proxy->getStateName();
-      state_marker.scale.x = 0.3;
-      state_marker.scale.y = 0.3;
-      state_marker.scale.z = 0.1;
+      state_marker.scale.x = 0.05;
+      state_marker.scale.y = 0.05;
+      state_marker.scale.z = 0.05;
       state_marker.pose.position.z += scale_3+0.05;
       // Set the color and alpha
       r1_marker.color.r = 1.00f;
@@ -369,34 +381,46 @@ int main (int argc, char** argv){
   // Initialize ROS
   ros::init (argc, argv, "proxy_test");
   ros::NodeHandle nh;
-  ros::Publisher pub;
-  pub = nh.advertise<sensor_msgs::PointCloud2>("output", 1);
+  ros::Publisher pub = nh.advertise<sensor_msgs::PointCloud2>("output", 1);
   ros::Rate rate(30);
 
-  HapticProxyPtr proxy = boost::make_shared<HapticProxy>(0.05, 0.075, 0.1, "world");
+  HapticProxyPtr proxy = boost::make_shared<HapticProxy>(0.01, 0.02, 0.03, "proxy");
   HapticProxyMarker proxy_marker(proxy, nh);
 
   double roll = 0.0, pitch = 0, yaw = 0.0;
   ROS_INFO_STREAM("Starting publishing");
+
+  tf::TransformListener tf_listener;
+
   while(ros::ok())
   {
-    proxy_marker.updateProxyMarker();
-    yaw += 0.1;
+    yaw += 0.01;
     Eigen::Quaterniond q;
     q =   Eigen::AngleAxisd(roll,  Eigen::Vector3d::UnitX())
         * Eigen::AngleAxisd(pitch, Eigen::Vector3d::UnitY())
         * Eigen::AngleAxisd(yaw,   Eigen::Vector3d::UnitZ());
-    Eigen::Affine3d pose = Eigen::Translation3d(0.0, 0.0, 0.0) * q;
-    geometry_msgs::Pose pose_msg;
-    tf::poseEigenToMsg(pose, pose_msg);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr sample_exmple_ptr = sampleSolidPrimitive(sample, pose_msg, 0.01);
+    Eigen::Affine3d sample_pose = Eigen::Translation3d(0.0, 0.0, 0.0) * q;
+    geometry_msgs::Pose sample_pose_msg;
+    tf::poseEigenToMsg(sample_pose, sample_pose_msg);
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr sample_exmple_ptr = sampleSolidPrimitive(sample, sample_pose_msg, "world", 0.01);
     // Convert to ROS data type
     sensor_msgs::PointCloud2::Ptr output(new sensor_msgs::PointCloud2);
     pcl::toROSMsg<pcl::PointXYZ>(*sample_exmple_ptr, *output);
-    output->header.frame_id = "world";
     // Publish the data
     output->header.stamp = ros::Time::now();
     pub.publish(output);
+
+    // Update proxy point cloud
+    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_proxy(new pcl::PointCloud<pcl::PointXYZ>());
+    bool transform_point_cloud = pcl_ros::transformPointCloud<pcl::PointXYZ>(proxy->getFrameId(),*sample_exmple_ptr, *point_cloud_proxy, tf_listener);
+    if (transform_point_cloud)
+    {
+      proxy->updatePointCloud(point_cloud_proxy);
+      proxy->updateProxyPoints();
+      proxy->updateProxyState();
+    }
+    proxy_marker.updateProxyMarker();
     rate.sleep();
   }
 }
