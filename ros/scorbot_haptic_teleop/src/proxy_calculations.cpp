@@ -134,20 +134,27 @@ public:
         } Type;
     };
 
-    HapticProxy(const double r1, const double r2, const double r3, const std::string& frame_id)
+    HapticProxy(double r1, double r2, double r3, float k, const std::string& frame_id)
     {
       double octree_resolution = 512.0;
       octree.reset(new pcl::octree::OctreePointCloudSearch<pcl::PointXYZ>(octree_resolution));
       // Set initial position for Proxy and HIP
       hip_position = Eigen::Vector3f::Zero();
       proxy_position = Eigen::Vector3f::Zero();
+      // Set normal init state
+      normal = Eigen::Vector3f::Zero();
+      valid_normal = false;
+      // Set force init state
+      force = Eigen::Vector3f::Zero();
       // Set initial state as Free
       proxy_state = ProxyState::FREE;
       // Set inital state for hip as Outside
       hip_state = HipState::OUTSIDE;
+      // Update radius
       setRadius(r1, r2, r3);
       this->frame_id = frame_id;
-      valid_normal = false;
+      // Spring constant
+      this->k = k;
     }
 
     void setRadius(const double r1, const double r2, const double r3)
@@ -167,6 +174,16 @@ public:
     std::string getFrameId() const
     {
       return frame_id;
+    }
+
+    double getSpringConstant() const
+    {
+      return k;
+    }
+
+    void setSpringConstant(float k)
+    {
+      this->k = k;
     }
 
     /**
@@ -193,10 +210,13 @@ public:
       float delta = (hip_position - hip_position_t0).norm();
       ROS_INFO_STREAM("Delta " << delta);
       ROS_INFO_STREAM("v " << v.x() << ", " <<  v.y() << ", "  << v.z());
-      // Avoid update if delta it's less than a mm
-      if(fabs(delta)< 0.0005) return;
       // Update normal
       updateNormal();
+      // Update force
+      updateForce(v);
+      // Avoid update if delta it's less than a mm
+      if(fabs(delta)< 0.0005) return;
+      // Check proxy state and movement
       if(proxy_state == ProxyState::PC_FREE || proxy_state == ProxyState::FREE)
       {
         Eigen::Vector3f vhat = v.normalized();
@@ -249,6 +269,7 @@ public:
 
     bool updateHipState()
     {
+      if (!valid_normal) return false;
       // Get plane from normal and centroid
       // From model ax + by + cz + d = 0 => d = -(ax + by + cz) = - normal dot p
       float d = - normal.dot(centroid);
@@ -260,7 +281,6 @@ public:
       hip_state = D > 0.0f ? HipState::OUTSIDE : HipState::INSIDE;
       return true;
     }
-
 
     void getProxyPosition(geometry_msgs::PoseStamped& pose) const
     {
@@ -302,7 +322,7 @@ public:
       proxy_position_pcl.x = proxy_position.x();
       proxy_position_pcl.y = proxy_position.y();
       proxy_position_pcl.z = proxy_position.z();
-      ROS_ERROR_STREAM("Updated proxy position " << proxy_position.x() << ", " <<  proxy_position.y() << ", "  << proxy_position.z());
+      ROS_INFO_STREAM("Updated proxy position " << proxy_position.x() << ", " <<  proxy_position.y() << ", "  << proxy_position.z());
       octree->radiusSearch(proxy_position_pcl, r1, point_idx_r1, point_distance_r1);
       ROS_INFO_STREAM("point_idx_r1.size() = "  << point_idx_r1.size());
       octree->radiusSearch(proxy_position_pcl, r2, point_idx_r2, point_distance_r2);
@@ -311,7 +331,8 @@ public:
       ROS_INFO_STREAM("point_idx_r3.size() = "  << point_idx_r3.size());
     }
 
-    void updateProxyState(){
+    void updateProxyState()
+    {
       // Update proxy state based on the amount of points in each sphere
 
       // Check for free state, no points in bigger sphere
@@ -324,6 +345,33 @@ public:
       else if(point_idx_r1.size() != 0)
         proxy_state = ProxyState::ENTRENCHMENT;
       ROS_INFO_STREAM("Current status: " << getProxyStateName());
+    }
+
+    void updateForce(const Eigen::Vector3f &v)
+    {
+      float vnorm = v.norm();
+      // Check distance and proxy status
+      if(vnorm < 0.5*r1 || proxy_state == ProxyState::PC_FREE || proxy_state == ProxyState::FREE)
+      {
+        ROS_INFO("Setting force zero due to hip it's close to proxy.");
+        force = Eigen::Vector3f::Zero();
+        return;
+      }
+      // Force algorithm
+      force = -v.normalized()*k*(vnorm-0.5*(r1+r2));
+      float force_norm = force.norm();
+      ROS_INFO_STREAM("Force: " << force_norm);
+      // Check for small force
+      if (force.norm()<0.1)
+      {
+        ROS_INFO("Setting force to zero due to force < 0.1");
+        force = Eigen::Vector3f::Zero();
+      }
+    }
+
+    void getForce(Eigen::Vector3f& force) const
+    {
+      force = this->force;
     }
 
     bool updateNormal()
@@ -344,8 +392,7 @@ public:
         // Normal calculation
         Eigen::Vector3f pk = cloud->points[point_idx_r3[i]].getVector3fMap();
         Eigen::Vector3f diff = proxy_position - pk;
-        float norm = diff.norm();
-        vector_sum += 1.0/norm*diff;
+        vector_sum += diff.normalized();
         // Average point in the point cloud
         centroid += pk;
       }
@@ -419,7 +466,10 @@ private:
     Eigen::Vector3f hip_position;
     Eigen::Vector3f normal;
     Eigen::Vector3f centroid;
+    Eigen::Vector3f force;
     bool valid_normal;
+    // Spring constant
+    float k;
     // For store octree results
     std::vector<int> point_idx_r1;
     std::vector<int> point_idx_r2;
@@ -439,7 +489,7 @@ typedef boost::shared_ptr<HapticProxy> HapticProxyPtr;
 class HapticProxyMarker
 {
     // Markers
-    visualization_msgs::Marker r1_marker, r2_marker, r3_marker, state_marker, normal_marker;
+    visualization_msgs::Marker r1_marker, r2_marker, r3_marker, state_marker, normal_marker, force_marker;
     HapticProxyPtr proxy;
     ros::NodeHandle nh;
     ros::Publisher marker_pub;
@@ -463,12 +513,14 @@ class HapticProxyMarker
       r3_marker.type = visualization_msgs::Marker::SPHERE;
       state_marker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
       normal_marker.type = visualization_msgs::Marker::ARROW;
+      force_marker.type = visualization_msgs::Marker::ARROW;
       // Add option
       r1_marker.action = visualization_msgs::Marker::ADD;
       r2_marker.action = visualization_msgs::Marker::ADD;
       r3_marker.action = visualization_msgs::Marker::ADD;
       state_marker.action = visualization_msgs::Marker::ADD;
       normal_marker.action = visualization_msgs::Marker::ADD;
+      force_marker.action = visualization_msgs::Marker::ADD;
       //  Update marker pose
       r1_marker.pose.position = hip_pose.pose.position;
       r1_marker.pose.orientation = hip_pose.pose.orientation;
@@ -477,16 +529,29 @@ class HapticProxyMarker
       r3_marker.pose.position = proxy_pose.pose.position;
       r3_marker.pose.orientation = proxy_pose.pose.orientation;
       state_marker.pose.position = proxy_pose.pose.position;
+      // Updade normal marker
       geometry_msgs::Point normal_marker_start, normal_marker_end;
       normal_marker_start = proxy_pose.pose.position;
       Eigen::Vector3f normal;
       bool valid_normal = proxy->getNormal(normal);
       normal *= 0.1;
-      normal_marker_end.x = normal.x(); normal_marker_end.y = normal.y();  normal_marker_end.z = normal.z();
+      normal_marker_end.x = normal.x()+normal_marker_start.x;
+      normal_marker_end.y = normal.y()+normal_marker_start.y;
+      normal_marker_end.z = normal.z()+normal_marker_start.z;
       normal_marker.points.clear();
       normal_marker.points.push_back(normal_marker_start);
       normal_marker.points.push_back(normal_marker_end);
-
+      // Updade force marker
+      geometry_msgs::Point force_marker_start, force_marker_end;
+      force_marker_start = proxy_pose.pose.position;
+      Eigen::Vector3f force;
+      proxy->getForce(force);
+      force_marker_end.x = force.x()+force_marker_start.x;
+      force_marker_end.y = force.y()+force_marker_start.y;
+      force_marker_end.z = force.z()+force_marker_start.z;
+      force_marker.points.clear();
+      force_marker.points.push_back(force_marker_start);
+      force_marker.points.push_back(force_marker_end);
 
       // Set the scale of the markers
       double scale_1, scale_2, scale_3;
@@ -503,41 +568,54 @@ class HapticProxyMarker
       normal_marker.scale.x = 0.01;
       normal_marker.scale.y = 0.02;
       normal_marker.scale.z = 0.01;
+      force_marker.scale.x = 0.01;
+      force_marker.scale.y = 0.02;
+      force_marker.scale.z = 0.01;
       // Status text
       state_marker.text = proxy->getProxyStateName();
       state_marker.scale.x = 0.010;
       state_marker.scale.y = 0.020;
       state_marker.scale.z = 0.015;
       state_marker.pose.position.z += scale_3+0.05;
-      // Set the color and alpha
+      // Set color for R1
       r1_marker.color.r = 1.00f;
       r1_marker.color.g = 0.34f;
       r1_marker.color.b = 0.20f;
       r1_marker.color.a = 1.00f;
-
+      // Set color for R2
       r2_marker.color.r = 1.00f;
       r2_marker.color.g = 0.75f;
       r2_marker.color.b = 0.00f;
       r2_marker.color.a = 0.50f;
-
+      // Set color for R3
       r3_marker.color.r = 0.15f;
       r3_marker.color.g = 0.68f;
       r3_marker.color.b = 0.37f;
       r3_marker.color.a = 0.50f;
-
+      // Set color for state text
       state_marker.color.r = 1.0f;
       state_marker.color.g = 1.0f;
       state_marker.color.b = 1.0f;
       state_marker.color.a = 1.0f;
-
-      normal_marker.color.r = 1.0f;
+      // Set color force normal
+      normal_marker.color.r = 0.0f;
       normal_marker.color.g = 0.0f;
-      normal_marker.color.b = 0.0f;
+      normal_marker.color.b = 1.0f;
       normal_marker.color.a = 1.0f;
       if (!valid_normal)
       {
         normal_marker.action = visualization_msgs::Marker::DELETE;
         normal_marker.color.a = 0.0f;
+      }
+      // Set color for force
+      force_marker.color.r = 1.0f;
+      force_marker.color.g = 0.0f;
+      force_marker.color.b = 0.0f;
+      force_marker.color.a = 1.0f;
+      if (force.norm() < 0.001)
+      {
+        force_marker.action = visualization_msgs::Marker::DELETE;
+        force_marker.color.a = 0.0f;
       }
       // Set id and namespace
       r1_marker.id = 1;
@@ -549,7 +627,9 @@ class HapticProxyMarker
       state_marker.id = 4;
       state_marker.ns = "proxy_marker/state";
       normal_marker.id = 5;
-      state_marker.ns = "proxy_marker/normal";
+      normal_marker.ns = "proxy_marker/normal";
+      force_marker.id = 6;
+      force_marker.ns = "proxy_marker/force";
       // Update header
       ros::Time now = ros::Time::now();
       r1_marker.header.frame_id = proxy_pose.header.frame_id;
@@ -562,6 +642,8 @@ class HapticProxyMarker
       state_marker.header.stamp = now;
       normal_marker.header.frame_id = proxy_pose.header.frame_id;
       normal_marker.header.stamp = now;
+      force_marker.header.frame_id = proxy_pose.header.frame_id;
+      force_marker.header.stamp = now;
       // Publish Markers
       visualization_msgs::MarkerArray marker;
       marker.markers.push_back(r1_marker);
@@ -569,6 +651,7 @@ class HapticProxyMarker
       marker.markers.push_back(r3_marker);
       marker.markers.push_back(state_marker);
       marker.markers.push_back(normal_marker);
+      marker.markers.push_back(force_marker);
       marker_pub.publish(marker);
     }
 };
@@ -578,7 +661,7 @@ geometry_msgs::PoseStamped target_hip_pose;
 void poseCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
   target_hip_pose = *msg;
-  ROS_ERROR_STREAM("Updated position " << msg->pose.position.x << ", " <<  msg->pose.position.y << ", "  << msg->pose.position.z);
+  ROS_INFO_STREAM("Updated position " << msg->pose.position.x << ", " <<  msg->pose.position.y << ", "  << msg->pose.position.z);
 }
 
 int main (int argc, char** argv){
@@ -604,7 +687,7 @@ int main (int argc, char** argv){
   target_hip_pose.header.frame_id = "world";
   ros::Subscriber sub = nh.subscribe("/marker_pose", 1, poseCallback);
 
-  HapticProxyPtr proxy = boost::make_shared<HapticProxy>(0.01, 0.02, 0.03, "world");
+  HapticProxyPtr proxy = boost::make_shared<HapticProxy>(0.01, 0.02, 0.03, 10.0, "world");
   HapticProxyMarker proxy_marker(proxy, nh);
 
   double roll = 0.0, pitch = 0, yaw = 0.0;
