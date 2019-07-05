@@ -24,12 +24,12 @@ find_package(catkin REQUIRED COMPONENTS
     visualization_msgs
     tf_conversions
     eigen_conversions
+    dynamic_reconfigure
 )
 
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-find_package(OpenCV REQUIRED)
 
 find_package(PCL REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
@@ -108,10 +108,9 @@ include_directories(${EIGEN3_INCLUDE_DIRS})
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
+generate_dynamic_reconfigure_options(
+  cfg/HapticProxyParameters.cfg
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -146,11 +145,18 @@ include_directories(
 
 
 
-## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/scorbot_haptic_teleop.cpp
-# )
-
+## Proxy library
+add_library(${PROJECT_NAME}_proxy
+  src/haptic_proxy_marker.cpp
+  src/haptic_proxy.cpp
+  src/shape_sampler.cpp
+  src/haptic_proxy_reconfigure.cpp
+)
+add_dependencies(${PROJECT_NAME}_proxy ${PROJECT_NAME}_gencfg)
+target_link_libraries(${PROJECT_NAME}_proxy
+  ${catkin_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -166,11 +172,11 @@ include_directories(
 #add_executable(pcl_fuse src/pcl_fuse.cpp)
 #target_link_libraries(pcl_fuse ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
-add_executable(proxy_calculations src/proxy_calculations.cpp src/haptic_teleop_point_cloud.cpp src/shape_sampler.cpp src/point_cloud_helper.cpp)
-target_link_libraries(proxy_calculations
+add_executable(haptic_proxy_test src/haptic_proxy_test.cpp)
+target_link_libraries(haptic_proxy_test
+        ${PROJECT_NAME}_proxy
         ${catkin_LIBRARIES}
         ${PCL_LIBRARIES}
-        ${OpenCV_LIBS}
 )
 
 ## Rename C++ executable without prefix

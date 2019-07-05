@@ -15,12 +15,12 @@ from geometry_msgs.msg import PoseStamped
 from threading import Lock
 import argparse
 
-class TFMarkerServer(object):
-    """TFMarkerServer"""
+class TargetMarkerServer(object):
+    """TargetMarkerServer"""
     def __init__(self, rate = 30.0, init_position = (0.0, 0.0, 0.0), parent_frame = "world", scale=0.3):
         # Marker server
-        self.server = InteractiveMarkerServer("tf_marker")
-        rospy.loginfo("Starting TF marker")
+        self.server = InteractiveMarkerServer("target_marker")
+        rospy.loginfo("Starting target marker")
         rospy.loginfo("Publish pose from frame_id {} at rate {}".format(parent_frame, rate))
         rospy.loginfo("Initial position: {}".format(init_position))
         # Marker pose
@@ -45,7 +45,7 @@ class TFMarkerServer(object):
         marker.pose.orientation.x,marker.pose.orientation.y,marker.pose.orientation.z,marker.pose.orientation.w = self.marker_orientation
         marker.scale = self.scale
 
-        marker.name = "tf_marker"
+        marker.name = "target_marker"
         marker.description = ""
 
         # X axis rotation
@@ -135,15 +135,15 @@ class TFMarkerServer(object):
 
 
 def main():
-    rospy.init_node("tf_marker")
-    parser = argparse.ArgumentParser("Publish TF based on position of 6DOF marker")
+    rospy.init_node("target_marker")
+    parser = argparse.ArgumentParser("Publish Pose stamped message based on position of 6DOF marker")
     parser.add_argument("--position", nargs="+", dest="position", required=True)
     parser.add_argument("--parent_frame", dest="parent_frame", required=True)
     parser.add_argument("--rate", dest="rate", default=30.0)
     parser.add_argument("--scale", dest="scale", default=0.3)
     args = parser.parse_args()
     init_position = tuple(float(i) for i in args.position)
-    marker_server = TFMarkerServer(rate=args.rate, init_position=init_position, parent_frame=args.parent_frame, scale=float(args.scale))
+    marker_server = TargetMarkerServer(rate=args.rate, init_position=init_position, parent_frame=args.parent_frame, scale=float(args.scale))
     rospy.spin()
 
 
