@@ -2,7 +2,7 @@
 
 HapticProxyReconfig::HapticProxyReconfig(HapticProxyPtr proxy, ros::NodeHandle nh):
         proxy_(proxy),
-        nh_("asdasd")
+        nh_("haptic_proxy")
 {
   param_reconfig_server_.reset(new DynamicReconfigServer(param_reconfig_mutex_, nh_));
   /* Set dynamic reconfigure callback */
