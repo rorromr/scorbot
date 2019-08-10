@@ -1,0 +1,12 @@
+<launch>
+
+    <!-- RViz -->
+    <node name="proxy_test_rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_haptic_teleop)/config/haptic_marker_test.rviz" />
+
+    <!-- Marker -->
+    <node name="proxy_test_target" pkg="scorbot_haptic_teleop" type="target_marker.py" args="--position 0 0 0.1 --parent_frame world --scale 0.1" output="screen"/>
+
+    <!-- Haptic proxy test -->
+    <node name="proxy_test" pkg="scorbot_haptic_teleop" type="haptic_proxy_test" output="screen"/>
+
+</launch>

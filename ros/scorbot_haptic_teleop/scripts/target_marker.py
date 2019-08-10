@@ -141,7 +141,7 @@ def main():
     parser.add_argument("--parent_frame", dest="parent_frame", required=True)
     parser.add_argument("--rate", dest="rate", default=30.0)
     parser.add_argument("--scale", dest="scale", default=0.3)
-    args = parser.parse_args()
+    args = parser.parse_args(rospy.myargv()[1:]) # Male argparse compatible with rospy
     init_position = tuple(float(i) for i in args.position)
     marker_server = TargetMarkerServer(rate=args.rate, init_position=init_position, parent_frame=args.parent_frame, scale=float(args.scale))
     rospy.spin()
