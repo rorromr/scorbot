@@ -44,6 +44,8 @@ public:
      */
     void updatePointCloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
 
+    void setProxyPositionOverride(const double x, const double y, const double z);
+
     void setHipPosition(const double x, const double y, const double z);
 
     bool updateHipState();

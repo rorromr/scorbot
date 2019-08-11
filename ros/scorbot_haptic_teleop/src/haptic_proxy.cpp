@@ -66,6 +66,13 @@ void HapticProxy::updatePointCloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr clo
   octree->addPointsFromInputCloud();
 }
 
+void HapticProxy::setProxyPositionOverride(const double x, const double y, const double z)
+{
+  proxy_position.x() = x;
+  proxy_position.y() = y;
+  proxy_position.z() = z;
+}  
+
 void HapticProxy::setHipPosition(const double x, const double y, const double z)
 {
   // Set position for Proxy
