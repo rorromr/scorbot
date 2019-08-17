@@ -38,7 +38,7 @@ int main (int argc, char** argv){
   target_hip_pose.pose.orientation.w = 1.0;
   target_hip_pose.header.frame_id = "world";
 
-  HapticProxyPtr proxy = boost::make_shared<HapticProxy>(0.01, 0.02, 0.03, 10.0, "world");
+  HapticProxyPtr proxy = boost::make_shared<HapticProxy>(0.005, 0.010, 0.015, 60.0, "world");
   HapticProxyReconfig proxy_reconf(proxy, nh);
   HapticProxyMarker proxy_marker(proxy, "/proxy_marker", nh);
   // Override init position of the Proxy

@@ -83,8 +83,8 @@ void HapticProxy::setHipPosition(const double x, const double y, const double z)
   // Update Hip position
   Eigen::Vector3f v = hip_position - proxy_position;
   float delta = (hip_position - hip_position_t0).norm();
-  ROS_INFO_STREAM("Delta " << delta);
-  ROS_INFO_STREAM("v " << v.x() << ", " <<  v.y() << ", "  << v.z());
+  ROS_DEBUG_STREAM("Delta " << delta);
+  ROS_DEBUG_STREAM("v " << v.x() << ", " <<  v.y() << ", "  << v.z());
   // Update normal
   updateNormal();
   // Update force
@@ -95,9 +95,9 @@ void HapticProxy::setHipPosition(const double x, const double y, const double z)
   if(proxy_state == ProxyState::PC_FREE || proxy_state == ProxyState::FREE)
   {
     Eigen::Vector3f vhat = v.normalized();
-    ROS_INFO_STREAM("vhat " << vhat.x() << ", " << vhat.y() << ", " << vhat.z());
+    ROS_DEBUG_STREAM("vhat " << vhat.x() << ", " << vhat.y() << ", " << vhat.z());
     Eigen::Vector3f movement = delta * vhat;
-    ROS_INFO_STREAM("Movement " << movement.x() << ", " << movement.y() << ", " << movement.z());
+    ROS_DEBUG_STREAM("Movement " << movement.x() << ", " << movement.y() << ", " << movement.z());
     proxy_position += movement;
     return;
   }
@@ -105,9 +105,9 @@ void HapticProxy::setHipPosition(const double x, const double y, const double z)
   {
     if(valid_normal)
     {
-      ROS_INFO_STREAM("normal " << normal.x() << ", " << normal.y() << ", " << normal.z());
+      ROS_DEBUG_STREAM("normal " << normal.x() << ", " << normal.y() << ", " << normal.z());
       Eigen::Vector3f movement = delta * normal;
-      ROS_INFO_STREAM("Movement " << movement.x() << ", " << movement.y() << ", " << movement.z());
+      ROS_DEBUG_STREAM("Movement " << movement.x() << ", " << movement.y() << ", " << movement.z());
       proxy_position += movement;
     }
     return;
@@ -120,9 +120,9 @@ void HapticProxy::setHipPosition(const double x, const double y, const double z)
       if (hip_state == HipState::OUTSIDE)
       {
         Eigen::Vector3f vhat = v.normalized();
-        ROS_INFO_STREAM("vhat " << vhat.x() << ", " << vhat.y() << ", " << vhat.z());
+        ROS_DEBUG_STREAM("vhat " << vhat.x() << ", " << vhat.y() << ", " << vhat.z());
         Eigen::Vector3f movement = delta * vhat;
-        ROS_INFO_STREAM("Movement " << movement.x() << ", " << movement.y() << ", " << movement.z());
+        ROS_DEBUG_STREAM("Movement " << movement.x() << ", " << movement.y() << ", " << movement.z());
         proxy_position += movement;
         return;
       }
@@ -130,9 +130,9 @@ void HapticProxy::setHipPosition(const double x, const double y, const double z)
       {
         // Estimate v_plane (normal it's normalized, so n dot n = 1)
         Eigen::Vector3f vplane = v - v.dot(normal)*normal;
-        ROS_INFO_STREAM("vplane " << vplane.x() << ", " << vplane.y() << ", " << vplane.z());
+        ROS_DEBUG_STREAM("vplane " << vplane.x() << ", " << vplane.y() << ", " << vplane.z());
         Eigen::Vector3f movement = delta * vplane;
-        ROS_INFO_STREAM("Movement " << movement.x() << ", " << movement.y() << ", " << movement.z());
+        ROS_DEBUG_STREAM("Movement " << movement.x() << ", " << movement.y() << ", " << movement.z());
         proxy_position += movement;
         return;
 
@@ -148,10 +148,10 @@ bool HapticProxy::updateHipState()
   // Get plane from normal and centroid
   // From model ax + by + cz + d = 0 => d = -(ax + by + cz) = - normal dot p
   float d = - normal.dot(centroid);
-  ROS_INFO_STREAM("d " << d);
+  ROS_DEBUG_STREAM("d " << d);
   // From http://mathworld.wolfram.com/Point-PlaneDistance.html
   float D = normal.dot(hip_position) + d;
-  ROS_INFO_STREAM("D " << D);
+  ROS_DEBUG_STREAM("D " << D);
   // Normal and hip position are in the same side of the plane => Outside
   hip_state = D > 0.0f ? HipState::OUTSIDE : HipState::INSIDE;
   return true;
@@ -197,13 +197,13 @@ void HapticProxy::updateProxyPoints()
   proxy_position_pcl.x = proxy_position.x();
   proxy_position_pcl.y = proxy_position.y();
   proxy_position_pcl.z = proxy_position.z();
-  ROS_INFO_STREAM("Updated proxy_ position " << proxy_position.x() << ", " <<  proxy_position.y() << ", "  << proxy_position.z());
+  ROS_DEBUG_STREAM("Updated proxy_position " << proxy_position.x() << ", " <<  proxy_position.y() << ", "  << proxy_position.z());
   octree->radiusSearch(proxy_position_pcl, r1, point_idx_r1, point_distance_r1);
-  ROS_INFO_STREAM("point_idx_r1.size() = "  << point_idx_r1.size());
+  ROS_DEBUG_STREAM("point_idx_r1.size() = "  << point_idx_r1.size());
   octree->radiusSearch(proxy_position_pcl, r2, point_idx_r2, point_distance_r2);
-  ROS_INFO_STREAM("point_idx_r2.size() = "  << point_idx_r2.size());
+  ROS_DEBUG_STREAM("point_idx_r2.size() = "  << point_idx_r2.size());
   octree->radiusSearch(proxy_position_pcl, r3, point_idx_r3, point_distance_r3);
-  ROS_INFO_STREAM("point_idx_r3.size() = "  << point_idx_r3.size());
+  ROS_DEBUG_STREAM("point_idx_r3.size() = "  << point_idx_r3.size());
 }
 
 void HapticProxy::updateProxyState()
@@ -219,23 +219,25 @@ void HapticProxy::updateProxyState()
     proxy_state = ProxyState::CONTACT;
   else if(point_idx_r1.size() != 0)
     proxy_state = ProxyState::ENTRENCHMENT;
-  ROS_INFO_STREAM("Current status: " << getProxyStateName());
+  ROS_DEBUG_STREAM("Current status: " << getProxyStateName());
 }
 
 void HapticProxy::updateForce(const Eigen::Vector3f &v)
 {
   float vnorm = v.norm();
+  ROS_DEBUG_STREAM("vnorm = " << vnorm);
+  ROS_DEBUG_STREAM("Force criteria 0.5*(r1+r2) = " << 0.5*(r1+r2));
   // Check distance and proxy_ status
-  if(vnorm < 0.5*r1 || proxy_state == ProxyState::PC_FREE || proxy_state == ProxyState::FREE)
+  if(vnorm < 0.5*(r1+r2) || proxy_state == ProxyState::PC_FREE || proxy_state == ProxyState::FREE)
   {
-    ROS_INFO("Setting force zero due to hip it's close to proxy");
+    ROS_DEBUG("Setting force zero due to hip it's close to proxy");
     force = Eigen::Vector3f::Zero();
     return;
   }
   // Force algorithm
   force = -v.normalized()*k*(vnorm-0.5*(r1+r2));
   float force_norm = force.norm();
-  ROS_INFO_STREAM("Force: " << force_norm);
+  ROS_DEBUG_STREAM("Force: " << force_norm);
   // Check for small force
   if (force.norm()<0.1)
   {
@@ -253,7 +255,7 @@ bool HapticProxy::updateNormal()
 {
   if (point_idx_r3.size() <= 3)
   {
-    ROS_INFO("No enough points to estimate normal");
+    ROS_DEBUG("No enough points to estimate normal");
     valid_normal = false;
     return valid_normal;
   }
