@@ -49,7 +49,7 @@
     </node>
 
     <!--RQT joint trajectory controller -->
-    <node if="$(arg use_gui)" name="rqt_joint_trajectory_controller" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller" />
+    <node name="rqt_scorbot" pkg="rqt_gui" type="rqt_gui" args="--perspective-file $(find scorbot_driver)/config/scorbot.perspective"/>
   </group>
 
   <!-- RViz with robot -->

@@ -5,7 +5,7 @@
       "keys": {
         "running-plugins": {
           "type": "repr", 
-          "repr": "{u'rqt_reconfigure/Param': [1]}"
+          "repr": "{u'rqt_reconfigure/Param': [1], u'rqt_joint_trajectory_controller/JointTrajectoryController': [1]}"
         }
       }, 
       "groups": {
@@ -33,8 +33,8 @@
               "keys": {
                 "splitter": {
                   "type": "repr(QByteArray.hex)", 
-                  "repr(QByteArray.hex)": "QtCore.QByteArray('000000ff0000000000000002000000ae0000006401000000040100000001')", 
-                  "pretty-print": "         d     "
+                  "repr(QByteArray.hex)": "QtCore.QByteArray('000000ff0000000000000002000000f50000020201000000040100000001')", 
+                  "pretty-print": "               "
                 }, 
                 "_splitter": {
                   "type": "repr(QByteArray.hex)", 
@@ -53,7 +53,7 @@
               "keys": {
                 "jtc_name": {
                   "type": "repr", 
-                  "repr": "None"
+                  "repr": "u'trajectory_controller'"
                 }, 
                 "cm_ns": {
                   "type": "repr", 
@@ -66,7 +66,7 @@
               "keys": {
                 "dockable": {
                   "type": "repr", 
-                  "repr": "u'true'"
+                  "repr": "True"
                 }, 
                 "parent": {
                   "type": "repr", 
@@ -87,13 +87,13 @@
       "keys": {
         "geometry": {
           "type": "repr(QByteArray.hex)", 
-          "repr(QByteArray.hex)": "QtCore.QByteArray('01d9d0cb00010000000001c50000002a000004d3000003bd000001cf00000050000004c9000003b3000000000000')", 
-          "pretty-print": "       *       P       "
+          "repr(QByteArray.hex)": "QtCore.QByteArray('01d9d0cb00010000000001bb0000006d000005cf000003b3000001c500000093000005c5000003a9000000000000')", 
+          "pretty-print": "       m               "
         }, 
         "state": {
           "type": "repr(QByteArray.hex)", 
-          "repr(QByteArray.hex)": "QtCore.QByteArray('000000ff00000000fd0000000100000003000002fb0000033cfc0100000002fb000000b4007200710074005f006a006f0069006e0074005f007400720061006a006500630074006f00720079005f0063006f006e00740072006f006c006c00650072005f005f004a006f0069006e0074005400720061006a006500630074006f007200790043006f006e00740072006f006c006c00650072005f005f0031005f005f004a006f0069006e0074005400720061006a006500630074006f007200790043006f006e00740072006f006c006c00650072005500690100000000000006620000000000000000fb0000006c007200710074005f007200650063006f006e006600690067007500720065005f005f0050006100720061006d005f005f0031005f005f005f0070006c007500670069006e0063006f006e007400610069006e00650072005f0074006f0070005f0077006900640067006500740100000000000002fb000000f900ffffff000002fb0000000000000004000000040000000800000008fc00000001000000030000000100000036004d0069006e0069006d0069007a006500640044006f0063006b00570069006400670065007400730054006f006f006c0062006100720000000000ffffffff0000000000000000')", 
-          "pretty-print": "                  rqt_joint_trajectory_controller__JointTrajectoryController__1__JointTrajectoryControllerUi          lrqt_reconfigure__Param__1___plugincontainer_top_widget                            6MinimizedDockWidgetsToolbar        "
+          "repr(QByteArray.hex)": "QtCore.QByteArray('000000ff00000000fd000000010000000300000401000002e8fc0100000001fc00000000000004010000012900fffffffa000000000200000002fb000000b4007200710074005f006a006f0069006e0074005f007400720061006a006500630074006f00720079005f0063006f006e00740072006f006c006c00650072005f005f004a006f0069006e0074005400720061006a006500630074006f007200790043006f006e00740072006f006c006c00650072005f005f0031005f005f004a006f0069006e0074005400720061006a006500630074006f007200790043006f006e00740072006f006c006c00650072005500690100000000ffffffff0000018900fffffffb0000006c007200710074005f007200650063006f006e006600690067007500720065005f005f0050006100720061006d005f005f0031005f005f005f0070006c007500670069006e0063006f006e007400610069006e00650072005f0074006f0070005f0077006900640067006500740100000019000001590000010f00ffffff000004010000000000000004000000040000000800000008fc00000001000000030000000100000036004d0069006e0069006d0069007a006500640044006f0063006b00570069006400670065007400730054006f006f006c0062006100720000000000ffffffff0000000000000000')", 
+          "pretty-print": "                     )                                                                                                                                                                        Y                                                            "
         }
       }, 
       "groups": {

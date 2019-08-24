@@ -50,6 +50,7 @@ namespace scorbot_driver
       std::vector<double> _joint_velocities; // actual joint velocity
       std::vector<double> _joint_efforts; // compulsory but not used
       /* Gripper */
+      bool _enable_gripper;
       double _gripper_command;
       double _gripper_angle;
       double _gripper_velocity;

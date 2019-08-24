@@ -50,5 +50,5 @@ gripper_controller:
 scorbot_control_hw:
   loop_frequency: 1000
   cycle_time_error_threshold: 0.002
-  ethercat_iface: eno1
+  ethercat_iface: eth0
 
