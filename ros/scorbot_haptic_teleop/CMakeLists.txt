@@ -186,6 +186,13 @@ target_link_libraries(haptic_proxy_test_tf
         ${PCL_LIBRARIES}
 )
 
+add_executable(haptic_teleop src/haptic_teleop.cpp)
+target_link_libraries(haptic_teleop
+        ${PROJECT_NAME}_proxy
+        ${catkin_LIBRARIES}
+        ${PCL_LIBRARIES}
+)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
