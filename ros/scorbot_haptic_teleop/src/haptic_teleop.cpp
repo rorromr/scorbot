@@ -167,8 +167,7 @@ namespace scorbot
             ROS_DEBUG_STREAM("robot elbow: " << robot_joint_state->position[robot_idx] << " | shadow elbow: " << scorbot_shadow_js_.position[shadow_idx]
                 << " | elbow force " << force_cmd_.force.y);
 
-            
-            haptic_force_pub_.publish(force_cmd_);
+            publishForce();
         }
 
         void hapticJointStateCallback(const sensor_msgs::JointStateConstPtr &haptic_joint_state)
@@ -292,8 +291,24 @@ namespace scorbot
                 Eigen::Vector3f normal;
                 bool normal_validation = proxy->updateNormal();
               }
+              // Update force
+              Eigen::Vector3f force;
+              proxy->getForce(force);
+              force_cmd_proxy_.force.x = -force.x();
+              force_cmd_proxy_.force.z = force.y();
+              force_cmd_proxy_.force.y = force.z();
+              publishForce();
             }
             proxy_marker.updateProxyMarker();
+        }
+
+        void publishForce()
+        {
+          omni_msgs::OmniFeedback total_force_cmd;
+          total_force_cmd.force.x = force_cmd_proxy_.force.x + force_cmd_.force.x;
+          total_force_cmd.force.y = force_cmd_proxy_.force.y + force_cmd_.force.y;
+          total_force_cmd.force.z = force_cmd_proxy_.force.z + force_cmd_.force.z;
+          haptic_force_pub_.publish(total_force_cmd);
         }
 
 
@@ -314,7 +329,7 @@ namespace scorbot
         sensor_msgs::JointState scorbot_shadow_js_;
         bool publish_cmd_;
         std_msgs::Float64 cmd_;
-        omni_msgs::OmniFeedback force_cmd_;
+        omni_msgs::OmniFeedback force_cmd_, force_cmd_proxy_;
         std::string name_;
         typedef std::map<std::string, LinearJointMappingPtr> JointMap;
         JointMap joint_map_;
