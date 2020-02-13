@@ -13,10 +13,7 @@ namespace scorbot_driver
       _motor_names.push_back("elbow");
       _motor_names.push_back("pitch");
       _motor_names.push_back("roll");
-      // Gripper limit at 0.5 A
-      /*
-      _gripper_current_limit_.initRT(0.5);
-      */
+      _enable_gripper = false;
     }
 
     ScorbotHardwareInterface::~ScorbotHardwareInterface()
@@ -29,15 +26,17 @@ namespace scorbot_driver
       /* Update motors */
       for(std::size_t i = 0; i < _motors.size(); ++i)
       {
-        _motors[i]->setPosition(_joint_commands[i]*RAD2ENC);
-        _joint_angles[i] = _motors[i]->getPosition()*ENC2RAD;
+        _motors[i]->setPosition(_joint_commands[i]);
+        _joint_angles[i] = _motors[i]->getPosition();
         _joint_efforts[i] = _motors[i]->getCurrent();
       }
       /* Update gripper */
-      /*
-      _gripper->setPosition(_gripper_command*160);
-      _gripper_effort = _gripper->getCurrent()*0.00625;
-      */
+      if (_enable_gripper)
+      {
+        _gripper->setCurrent(_gripper_command);
+        _gripper_effort = _gripper->getCurrent();
+        _gripper_angle =  _gripper->getPosition();
+      }
       _master.update();
     }
 
@@ -52,7 +51,6 @@ namespace scorbot_driver
       _joint_angles.resize(motor_count, 0.0);
       _joint_velocities.resize(motor_count, 0.0);
       _joint_efforts.resize(motor_count, 0.0);
-
 
       for(std::size_t i = 0; i < _motors.size(); ++i)
       {
@@ -83,36 +81,40 @@ namespace scorbot_driver
         _motors[i]->setPosition(0);//cHANGE!
       }
       /* Gripper */
-      /* Create joint drivers */
-      //_gripper.reset(new ScorbotJointDriver("gripper"));
-      /* Register joint driver on EtherCAT master */
-      //_master.registerDriver(boost::static_pointer_cast<EthercatDriver>(_gripper));
-      /* State interface */
-      /*
-      hardware_interface::JointStateHandle state_handle(
-        "gripper",
-        &_gripper_angle,
-        &_gripper_velocity,
-        &_gripper_effort);
-      _jnt_state_interface.registerHandle(state_handle);
-      */
-      /* EffortJointInterface for the Gripper */
-      /*
-      hardware_interface::JointHandle eff_handle(
-                _jnt_state_interface.getHandle("gripper"),
-                &_gripper_command);
-      _jnt_eff_interface.registerHandle(eff_handle);
-      */
+      if (_enable_gripper)
+      {
+        /* Create joint drivers */
+        _gripper.reset(new ScorbotGripperDriver());
+        /* Register joint driver on EtherCAT master */
+        _master.registerDriver(boost::static_pointer_cast<EthercatDriver>(_gripper));
+        /* State interface */
+        hardware_interface::JointStateHandle state_handle_right(
+          "gripper_finger_right_joint",
+          &_gripper_angle,
+          &_gripper_velocity,
+          &_gripper_effort);
+        hardware_interface::JointStateHandle state_handle_left(
+            "gripper_finger_left_joint",
+            &_gripper_angle,
+            &_gripper_velocity,
+            &_gripper_effort);
+        _jnt_state_interface.registerHandle(state_handle_right);
+        _jnt_state_interface.registerHandle(state_handle_left);
+        /* EffortJointInterface for the Gripper */
+        hardware_interface::JointHandle eff_handle(
+                  _jnt_state_interface.getHandle("gripper_finger_right_joint"),
+                  &_gripper_command);
+        _jnt_eff_interface.registerHandle(eff_handle);
+      }
       // Init EtherCAT master
       _master.configure();
       _master.start();
       // Register the hardware interfaces on RobotHW
       registerInterface(&_jnt_state_interface);
       registerInterface(&_jnt_pos_interface);
-      /*
-      registerInterface(&_jnt_eff_interface);
-      */
+      if(_enable_gripper)
+      {
+        registerInterface(&_jnt_eff_interface);
+      }
     }
-
-
 }

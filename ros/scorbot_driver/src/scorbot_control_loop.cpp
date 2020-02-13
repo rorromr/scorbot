@@ -19,7 +19,7 @@ namespace scorbot_driver {
       error += !np.getParam("loop_frequency", _loop_hz);
       error += !np.getParam("cycle_time_error_threshold", _cycle_time_error_threshold);
       if (error > 0) {
-        char error_message[] = "could not retrieve one of the required parameters\n\tscorbot_hw/loop_hz or dynamixel_hw/cycle_time_error_threshold";
+        char error_message[] = "could not retrieve one of the required parameters\n\tscorbot_hw/loop_hz or scorbot_hw/cycle_time_error_threshold";
         ROS_ERROR_STREAM(error_message);
         throw std::runtime_error(error_message);
       }

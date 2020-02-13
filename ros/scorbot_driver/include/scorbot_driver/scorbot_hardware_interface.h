@@ -28,8 +28,7 @@ namespace scorbot_driver
       void update();
 
     private:
-      static const double ENC2RAD = 2.0*M_PI/(3.0*160.0*96.0);
-      static const double RAD2ENC = 1.0/(2.0*M_PI/(3.0*160.0*96.0));
+
       // not implemented
       ScorbotHardwareInterface(ScorbotHardwareInterface const&);
 
@@ -40,7 +39,7 @@ namespace scorbot_driver
       hardware_interface::JointStateInterface _jnt_state_interface;
       hardware_interface::PositionJointInterface _jnt_pos_interface;
       // For the gripper effort interface it's used
-      //hardware_interface::EffortJointInterface _jnt_eff_interface;
+      hardware_interface::EffortJointInterface _jnt_eff_interface;
 
       // Memory space shared with the controller
       // It reads here the latest robot's state and put here the next desired values
@@ -51,6 +50,7 @@ namespace scorbot_driver
       std::vector<double> _joint_velocities; // actual joint velocity
       std::vector<double> _joint_efforts; // compulsory but not used
       /* Gripper */
+      bool _enable_gripper;
       double _gripper_command;
       double _gripper_angle;
       double _gripper_velocity;
@@ -59,12 +59,8 @@ namespace scorbot_driver
       // EtherCAT connection
       EthercatMaster _master;
       std::vector<ScorbotJointDriverPtr> _motors;
-      ScorbotJointDriverPtr _gripper;
+      ScorbotGripperDriverPtr _gripper;
       std::vector<std::string> _motor_names;
-      // Gripper current limitation
-      realtime_tools::RealtimeBuffer<double> _gripper_current_limit_;
-      void _gripper_current_cb(const std_msgs::Float64& current_limit_) {_gripper_current_limit_.writeFromNonRT(current_limit_.data);}
-      ros::Subscriber _gripper_current_limit_sub_;
   };
 }
 

@@ -4,6 +4,17 @@
 #include <omni_msgs/OmniFeedback.h>
 #include <std_msgs/Float64.h>
 
+#include <sensor_msgs/PointCloud2.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <pcl_ros/transforms.h>
+#include <eigen_conversions/eigen_msg.h>
+#include <tf/transform_listener.h>
+
+#include "scorbot_haptic_teleop/haptic_proxy.h"
+#include "scorbot_haptic_teleop/haptic_proxy_marker.h"
+#include "scorbot_haptic_teleop/shape_sampler.h"
+#include "scorbot_haptic_teleop/haptic_proxy_reconfigure.h"
+
 namespace scorbot
 {
     class LinearJointMapping
@@ -37,7 +48,11 @@ namespace scorbot
         nh_(),
         nh_priv_("~"),
         name_("haptic_teleop"),
-        publish_cmd_(false)
+        publish_cmd_(false),
+        proxy(boost::make_shared<HapticProxy>(0.005, 0.010, 0.015, 60.0, "scorbot_shadow/base")),
+        proxy_reconf(proxy, nh_),
+        proxy_marker(proxy, "/proxy_marker", nh_),
+        tf_listener()
         {
             // Haptic joint states
             haptic_js_sub_ = nh_.subscribe("haptic_joint_states", 10, &HapticTeleop::hapticJointStateCallback, this);
@@ -80,6 +95,38 @@ namespace scorbot
             joint_map_["elbow"] = boost::make_shared<LinearJointMapping>(1.0, -1.0);
             joint_map_["pitch"] = boost::make_shared<LinearJointMapping>(0.5, -1.0);
             joint_map_["roll"] = boost::make_shared<LinearJointMapping>(0.5, -3.14);
+
+            // Proxy
+            target_hip_pose.pose.position.x = 0.0;
+            target_hip_pose.pose.position.y = 0.0;
+            target_hip_pose.pose.position.z = 0.1;
+            target_hip_pose.pose.orientation.x = 0.0;
+            target_hip_pose.pose.orientation.y = 0.0;
+            target_hip_pose.pose.orientation.z = 0.0;
+            target_hip_pose.pose.orientation.w = 1.0;
+            target_hip_pose.header.frame_id = "scorbot_shadow/base";
+            // Override init position of the Proxy
+            proxy->setProxyPositionOverride(0.1, 0.0, 0.08);
+            
+            // Generate surface
+            shape_msgs::SolidPrimitive sample;
+            sample.type  = shape_msgs::SolidPrimitive::BOX;
+            sample.dimensions.push_back(0.8);
+            sample.dimensions.push_back(1.2);
+            sample.dimensions.push_back(0.01);
+            Eigen::Quaterniond q;
+            q =   Eigen::AngleAxisd(0.0, Eigen::Vector3d::UnitX())
+                * Eigen::AngleAxisd(0.0, Eigen::Vector3d::UnitY())
+                * Eigen::AngleAxisd(0.0, Eigen::Vector3d::UnitZ());
+            Eigen::Affine3d sample_pose = Eigen::Translation3d(0.3, 0.0, 0.0) * q;
+            geometry_msgs::Pose sample_pose_msg;
+            tf::poseEigenToMsg(sample_pose, sample_pose_msg);
+            sample_example_ptr = sampleSolidPrimitive(sample, sample_pose_msg, "scorbot_shadow/base", 0.005);
+            // Convert to ROS data type
+            pc_enviroment_output.reset(new sensor_msgs::PointCloud2());
+            pcl::toROSMsg<pcl::PointXYZ>(*sample_example_ptr, *pc_enviroment_output);
+
+            pub_enviroment_pc = nh_.advertise<sensor_msgs::PointCloud2>("output", 1);
         };
 
         void hapticButtonStateCallback(const omni_msgs::OmniButtonEvent &haptic_button)
@@ -120,8 +167,7 @@ namespace scorbot
             ROS_DEBUG_STREAM("robot elbow: " << robot_joint_state->position[robot_idx] << " | shadow elbow: " << scorbot_shadow_js_.position[shadow_idx]
                 << " | elbow force " << force_cmd_.force.y);
 
-            
-            haptic_force_pub_.publish(force_cmd_);
+            publishForce();
         }
 
         void hapticJointStateCallback(const sensor_msgs::JointStateConstPtr &haptic_joint_state)
@@ -208,6 +254,61 @@ namespace scorbot
             {
                 scorbot_roll_cmd_pub_.publish(cmd_);
             }
+
+            // Publish enviroment point cloud data
+            pc_enviroment_output->header.stamp = ros::Time::now();
+            pub_enviroment_pc.publish(pc_enviroment_output);
+            // Proxy position
+            // Get target position from TF
+            geometry_msgs::PointStamped proxy_target_gripper, proxy_target;
+            proxy_target_gripper.header.frame_id = "scorbot_shadow/gripper_base_link";
+            proxy_target_gripper.point.x = 0.15;
+            try
+            {
+              tf_listener.transformPoint("scorbot_shadow/base", proxy_target_gripper, proxy_target);
+              target_hip_pose.pose.position.x = proxy_target.point.x;
+              target_hip_pose.pose.position.y = proxy_target.point.y;
+              target_hip_pose.pose.position.z = proxy_target.point.z;
+            }
+            catch (tf::TransformException &ex)
+            {
+              ROS_ERROR("%s", ex.what());
+              return;
+            }
+
+            // Update proxy_ point cloud
+            pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_proxy(new pcl::PointCloud<pcl::PointXYZ>());
+            bool transform_point_cloud = pcl_ros::transformPointCloud<pcl::PointXYZ>(proxy->getFrameId(),*sample_example_ptr, *point_cloud_proxy, tf_listener);
+
+            if (transform_point_cloud)
+            {
+              proxy->updatePointCloud(point_cloud_proxy);
+              proxy->updateProxyPoints();
+              proxy->updateProxyState();
+              proxy->setHipPosition(target_hip_pose.pose.position.x, target_hip_pose.pose.position.y, target_hip_pose.pose.position.z);
+              if (proxy->getProxyState() != HapticProxy::ProxyState::PC_FREE)
+              {
+                Eigen::Vector3f normal;
+                bool normal_validation = proxy->updateNormal();
+              }
+              // Update force
+              Eigen::Vector3f force;
+              proxy->getForce(force);
+              force_cmd_proxy_.force.x = -force.x();
+              force_cmd_proxy_.force.z = force.y();
+              force_cmd_proxy_.force.y = force.z();
+              publishForce();
+            }
+            proxy_marker.updateProxyMarker();
+        }
+
+        void publishForce()
+        {
+          omni_msgs::OmniFeedback total_force_cmd;
+          total_force_cmd.force.x = force_cmd_proxy_.force.x + force_cmd_.force.x;
+          total_force_cmd.force.y = force_cmd_proxy_.force.y + force_cmd_.force.y;
+          total_force_cmd.force.z = force_cmd_proxy_.force.z + force_cmd_.force.z;
+          haptic_force_pub_.publish(total_force_cmd);
         }
 
 
@@ -228,10 +329,19 @@ namespace scorbot
         sensor_msgs::JointState scorbot_shadow_js_;
         bool publish_cmd_;
         std_msgs::Float64 cmd_;
-        omni_msgs::OmniFeedback force_cmd_;
+        omni_msgs::OmniFeedback force_cmd_, force_cmd_proxy_;
         std::string name_;
         typedef std::map<std::string, LinearJointMappingPtr> JointMap;
         JointMap joint_map_;
+        // Proxy
+        HapticProxyPtr proxy;
+        HapticProxyReconfig proxy_reconf;
+        HapticProxyMarker proxy_marker;
+        geometry_msgs::PoseStamped target_hip_pose;
+        ros::Publisher pub_enviroment_pc;
+        sensor_msgs::PointCloud2::Ptr pc_enviroment_output;
+        pcl::PointCloud<pcl::PointXYZ>::Ptr sample_example_ptr;
+        tf::TransformListener tf_listener;
     };
 
 }

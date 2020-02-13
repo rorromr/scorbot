@@ -1,0 +1,17 @@
+<launch>
+
+    <!-- RViz -->
+    <node name="proxy_test_rviz" pkg="rviz" type="rviz" args="-d $(find scorbot_haptic_teleop)/config/haptic_marker_omni_test.rviz" />
+
+    <!-- Haptic proxy test getting data from Phantom Omni using TF -->
+    <node name="proxy_test" pkg="scorbot_haptic_teleop" type="haptic_proxy_test_tf" output="screen"/>
+
+    <!-- Base static TF -->
+    <node name="base_omni_tf" pkg="tf" type="static_transform_publisher"
+          args="0 0 0 0 0 0 /world /omni/base 60"/>
+
+    <!-- RQT -->
+  	<node name="rqt_proxy_parameters" pkg="rqt_gui" type="rqt_gui" args="--perspective-file $(find scorbot_haptic_teleop)/config/proxy_parameters.perspective"/>
+  
+
+</launch>

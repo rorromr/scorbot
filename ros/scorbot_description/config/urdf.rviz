@@ -4,6 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /Global Options1
         - /Scorbot Model1
       Splitter Ratio: 0.5
     Tree Height: 559
@@ -97,9 +98,13 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        world:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
       Name: Scorbot Model
-      Robot Description: robot_description
-      TF Prefix: ""
+      Robot Description: scorbot/robot_description
+      TF Prefix: /scorbot
       Update Interval: 0
       Value: true
       Visual Enabled: true
@@ -120,7 +125,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 230; 230; 230
-    Fixed Frame: base
+    Fixed Frame: scorbot/base
     Frame Rate: 30
   Name: root
   Tools:
@@ -153,10 +158,10 @@ Visualization Manager:
         Z: 0.181998
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.305398
+      Pitch: 0.550398
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.975401
+      Yaw: 0.6904
     Saved: ~
 Window Geometry:
   Displays:
@@ -174,5 +179,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1200
-  X: 137
-  Y: 48
+  X: 322
+  Y: 94

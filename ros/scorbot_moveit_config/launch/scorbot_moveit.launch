@@ -1,0 +1,24 @@
+<launch>
+    <!-- By default, we are not in debug mode -->
+    <arg name="debug" default="false" />
+    <!-- Enable RViz for motion planning visualization -->
+    <arg name="use_gui" default="false" />
+
+    <group ns="scorbot">
+        <!-- Load SRDF, URDF it's loaded previously -->
+        <include file="$(find scorbot_moveit_config)/launch/planning_context.launch">
+            <arg name="load_robot_description" value="false"/>
+        </include>
+        <!-- Move Group node -->
+        <include file="$(find scorbot_moveit_config)/launch/move_group.launch">
+            <arg name="allow_trajectory_execution" value="true"/>
+            <arg name="fake_execution" value="false"/>
+            <arg name="info" value="true"/>
+            <arg name="debug" value="$(arg debug)"/>
+            <remap from="/robot_description_semantic" to="/scorbot/robot_description_semantic" />
+        </include>
+    </group>
+    <node if="$(arg use_gui)" name="rviz_scorbot_moveit" pkg="rviz" type="rviz" respawn="false" output="screen" args="-d $(find scorbot_moveit_config)/config/scorbot_moveit.rviz"/>
+    <!-- Add /world frame -->
+    <node pkg="tf" type="static_transform_publisher" name="world_tf_broadcaster" args="0 0 0 0 0 0 /world /scorbot/world 100" />
+</launch>

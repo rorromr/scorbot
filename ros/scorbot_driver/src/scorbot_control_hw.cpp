@@ -6,6 +6,11 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "scorbot_control_hw");
   ros::NodeHandle nh;
 
+  ros::NodeHandle nh_local("~");
+  std::string ecat_iface;
+  nh_local.param<std::string>("ethercat_iface", ecat_iface, "eth0");
+  ROS_INFO_STREAM("Using " << ecat_iface << " as EtherCAT interface for Scorbot");
+
   // Run the hardware interface node
   // -------------------------------
 
@@ -16,7 +21,7 @@ int main(int argc, char** argv)
 
   // Create the hardware interface specific to your robot
   boost::shared_ptr<scorbot_driver::ScorbotHardwareInterface>
-          scorbot_hw_interface = boost::make_shared<scorbot_driver::ScorbotHardwareInterface>("eth0");
+          scorbot_hw_interface = boost::make_shared<scorbot_driver::ScorbotHardwareInterface>(ecat_iface);
   scorbot_hw_interface->init();
 
   // Start the control loop
